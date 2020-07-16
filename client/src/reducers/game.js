@@ -9,25 +9,53 @@ function createPlayer(id, type, name) {
 }
 
 const initialSate = {
-    isFetching:      false,
-    isStarted:       false,
-    currentPlayerId: '',
-    players:         [],
+    roomId:              false,
+    errorMessage:        false,
+    isStarted:           false,
+    currentPlayerId:     '',
+    players:             [],
+    availableGames:      [],
 };
 
 function game(state = initialSate, action) {
     switch (action.type) {
-        case gameActions.GAME_CREATED:
-            console.log('GAME_CREATED');
-            return {
-                ...state,
-                isFetching: true,
-            };
         case gameActions.BEGIN_GAME:
-            console.log('BEGIN_GAME');
+            return {...state, isStarted: true, roomId: action.game.roomId};
+
+        case gameActions.PLAYER_CONNECTED:
+            return {...state, players: action.players};
+
+        case gameActions.CONNECT_TO_GAME_PENDING:
+            return {...state, errorMessage: false};
+        case gameActions.CONNECT_TO_GAME_SUCCESS:
+            return state;
+        case gameActions.CONNECT_TO_GAME_FAILURE:
+            return {...state, errorMessage: action.error};
+
+        case gameActions.GAMES_REFRESHED:
             return {
                 ...state,
-                isFetching: false,
+                availableGames: action.result,
+                roomId: false,
+            };
+        case gameActions.GAMES_REFRESHING_FAILURE:
+            return state;
+        case gameActions.GAMES_REFRESHING:
+            return state;
+
+        case gameActions.GAME_CREATING:
+            // TODO show a loader
+            return state;
+        case gameActions.GAME_CREATED:
+            return state;
+        case gameActions.GAME_FAILURE:
+            // show an error
+            return state;
+
+        case gameActions.ROOM_CREATED:
+            return {
+                ...state,
+                roomId: action.roomId,
             };
         case gameActions.ADD_PLAYER:
             let player = createPlayer(action.id, action.playerType, action.name);

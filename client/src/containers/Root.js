@@ -4,11 +4,16 @@ import { Provider } from 'react-redux'
 import { Route } from 'react-router-dom'
 import Home from './Home'
 import Game from './Game'
+import User from './User'
+import PlayField from './PlayField'
+import 'bootstrap/dist/css/bootstrap.min.css';
 
 const Root = ({ store }) => (
     <Provider store={store}>
-        <Route exact path="/"     component={Home} />
-        <Route exact path="/game" component={Game} />
+        <Route exact path="/"                  component={Home} />
+        <Route exact path="/user"              component={User} />
+        <Route exact path="/game/:roomId"      component={Game} />
+        <Route exact path="/game/:roomId/play" component={PlayField} />
     </Provider>
 );
 

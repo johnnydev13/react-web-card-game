@@ -24,6 +24,7 @@ export default class socketAPI {
     }
 
     emit(event, data) {
+        console.log('event socket', event, data);
         return new Promise((resolve, reject) => {
             if (!this.socket) return reject('No socket connection.');
             return this.socket.emit(event, data, (response) => {
@@ -32,8 +33,8 @@ export default class socketAPI {
                     return reject(response.error);
                 }
 
-                console.log(response);
-                return resolve();
+                console.log('success socket request', response);
+                return resolve(response);
             });
         });
     }

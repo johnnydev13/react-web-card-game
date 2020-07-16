@@ -1,12 +1,10 @@
 import { combineReducers } from 'redux';
-import dragAndDrop from './dragAndDrop';
-import cards from './cards';
 import game from './game';
+import user from './user';
 
 const rootReducer = combineReducers({
-    dragAndDrop,
     game,
-    cards
+    user
 });
 
 export default rootReducer;

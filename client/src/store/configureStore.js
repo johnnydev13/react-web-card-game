@@ -4,16 +4,17 @@ import { createLogger } from 'redux-logger';
 import rootReducer from '../reducers'
 import { composeWithDevTools } from 'redux-devtools-extension'
 import socketMiddleware from '../middleware/socketMiddleware';
-import SocketClient from '../api/socketClient';
+import localStorageMiddleware from '../middleware/localStorageMiddleware';
 
-const logger = createLogger();
 
+const logger = createLogger({collapsed: true});
 
 const configureStore = (socketClient) => {
     const middlewares = [
         thunk,
         logger,
-        socketMiddleware(socketClient)
+        socketMiddleware(socketClient),
+        localStorageMiddleware,
     ];
 
     const store = createStore(
