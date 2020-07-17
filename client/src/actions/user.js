@@ -8,7 +8,9 @@ export const EDIT_PROFILE_FAILURE = 'EDIT_PROFILE_FAILURE';
 
 export const editProfile = (login, name) => ({
     type: SOCKET,
-    stages: [EDIT_PROFILE_PENDING, EDIT_PROFILE_SUCCESS, EDIT_PROFILE_FAILURE],
+    onPending: EDIT_PROFILE_PENDING,
+    onSuccess: EDIT_PROFILE_SUCCESS,
+    onFilure: EDIT_PROFILE_FAILURE,
     promise: (socket) => {
         return socket.emit('profileEdit', {login, name});
     },

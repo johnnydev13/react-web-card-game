@@ -14,13 +14,12 @@ const getUser = () => {
     }
 };
 
-const initialSate = {
+const initialState = {
     ...getUser(),
     errors: {},
 };
 
-function user(state = initialSate, action) {
-    console.log('reduce userActions', action.type, action);
+function user(state = initialState, action) {
     switch (action.type) {
         case userActions.EDIT_PROFILE_PENDING:
             return {...state, errors: {}};

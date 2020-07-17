@@ -20,6 +20,11 @@ export const CONNECT_TO_GAME_PENDING = 'CONNECT_TO_GAME_PENDING';
 export const CONNECT_TO_GAME_SUCCESS = 'CONNECT_TO_GAME_SUCCESS';
 export const CONNECT_TO_GAME_FAILURE = 'CONNECT_TO_GAME_FAILURE';
 
+export const GAME_DATA_SUCCESS = 'GAME_DATA_SUCCESS';
+
+export const BEGIN_GAME_PENDING = 'BEGIN_GAME_PENDING';
+export const END_GAME_PENDING   = 'END_GAME_PENDING';
+
 //const
 const generatePlayerId = players => {
     return players.length + 1;
@@ -34,7 +39,10 @@ const addPlayerToGame = (id, name, playerType) => ({
 
 const startGame = (playerLogin, playerName, maxPlayers) => ({
     type: SOCKET,
-    stages: [GAME_CREATING, GAME_CREATED, GAME_FAILURE],
+    onPending: GAME_CREATING,
+    onSuccess: GAME_CREATED,
+    onFailure: GAME_FAILURE,
+    //stages: [GAME_CREATING, GAME_CREATED, GAME_FAILURE],
     promise: (socket) => {
         return socket.emit('startGame', {playerLogin, playerName, maxPlayers});
     },
@@ -43,7 +51,10 @@ export const startGameRequest = (playerLogin, playerName, maxPlayers) => dispatc
 
 const connectToGame = (roomId, playerLogin, playerName) => ({
     type: SOCKET,
-    stages: [CONNECT_TO_GAME_PENDING, CONNECT_TO_GAME_SUCCESS, CONNECT_TO_GAME_FAILURE],
+    onPending: CONNECT_TO_GAME_PENDING,
+    onSuccess: CONNECT_TO_GAME_SUCCESS,
+    onFailure: CONNECT_TO_GAME_FAILURE,
+    //stages: [CONNECT_TO_GAME_PENDING, CONNECT_TO_GAME_SUCCESS, CONNECT_TO_GAME_FAILURE],
     promise: (socket) => {
         return socket.emit('connectToGame', {roomId, playerLogin, playerName});
     },
@@ -52,12 +63,25 @@ export const connectToGameRequest = (roomId, playerLogin, playerName) => dispatc
 
 const findGames = () => ({
     type: SOCKET,
-    stages: [GAMES_REFRESHING, GAMES_REFRESHED, GAMES_REFRESHING_FAILURE],
+    onPending: GAMES_REFRESHING,
+    onSuccess: GAMES_REFRESHED,
+    onFailure: GAMES_REFRESHING_FAILURE,
+    //stages: [GAMES_REFRESHING, GAMES_REFRESHED, GAMES_REFRESHING_FAILURE],
     promise: (socket) => {
         return socket.emit('findGames');
     },
 });
 export const findGamesRequest = () => dispatch => dispatch(findGames());
+
+const getGameData = (roomId, login) => ({
+    type: SOCKET,
+    onSuccess: GAME_DATA_SUCCESS,
+    //stages: [GAMES_REFRESHING, GAMES_REFRESHED, GAMES_REFRESHING_FAILURE],
+    promise: (socket) => {
+        return socket.emit('getGameData', {roomId, login});
+    },
+});
+export const getGameDataRequest = (roomId, login) => dispatch => dispatch(getGameData(roomId, login));
 
 export const addHumanPlayer = () => (dispatch, getState) =>  {
     let id   = generatePlayerId(getState().game.players);
@@ -85,9 +109,19 @@ export const playerConnected = (players) => {
         players: players,
     }
 };
-export const beginGame = (game) => {
+export const beginGame = (result) => {
     return {
         type: BEGIN_GAME,
-        game: game,
+        result: result,
+    }
+};
+export const pendingStart = () => {
+    return {
+        type: BEGIN_GAME_PENDING,
+    }
+};
+export const pendingStop = () => {
+    return {
+        type: END_GAME_PENDING,
     }
 };

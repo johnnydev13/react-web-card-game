@@ -1,4 +1,6 @@
 import * as gameActions from '../actions/game';
+import * as cardActions from '../actions/cards';
+import {USE_CARD} from "../actions/cards";
 
 function createPlayer(id, type, name) {
     return {
@@ -8,19 +10,28 @@ function createPlayer(id, type, name) {
     }
 }
 
-const initialSate = {
+const initialState = {
     roomId:              false,
     errorMessage:        false,
     isStarted:           false,
-    currentPlayerId:     '',
+    isPending:           false,
+    currentTurnPlayerId: '',
     players:             [],
     availableGames:      [],
 };
 
-function game(state = initialSate, action) {
+function game(state = initialState, action) {
     switch (action.type) {
+        case cardActions.USE_CARD:
+        case gameActions.BEGIN_GAME_PENDING:
+            return {...state, isPending: true};
+        case gameActions.END_GAME_PENDING:
+            return {...state, isPending: false};
+
+        case gameActions.GAME_DATA_SUCCESS:
         case gameActions.BEGIN_GAME:
-            return {...state, isStarted: true, roomId: action.game.roomId};
+            return {...state, isStarted: true, roomId: action.result.roomId, players: action.result.players, currentTurnPlayerId: action.result.currentTurnPlayerId};
+            //return {...state, isStarted: true, roomId: action.game.roomId, players: action.game.players, currentPlayerId: action.game.currentPlayerId};
 
         case gameActions.PLAYER_CONNECTED:
             return {...state, players: action.players};

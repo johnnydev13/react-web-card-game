@@ -34,45 +34,45 @@ export default function socketMiddleware(socket) {
              * type: always 'socket'
              * stages: [REQUEST, SUCCESS, FAILURE]
              */
-            const { promise, type, stages, onSuccess, ...rest } = action;
+            const { promise, type, onPending, onSuccess, onFailure, ...rest } = action;
 
             if (type !== SOCKET || !promise) {
                 // not a socket request
                 return next(action);
             }
 
-            var REQUEST, SUCCESS, FAILURE;
-
-            if (typeof stages !== 'undefined') {
-                [REQUEST, SUCCESS, FAILURE] = stages;
-            }
-
-            if (typeof REQUEST !== 'undefined') {
-                next({...rest, type: REQUEST});
+            if (typeof onPending !== 'undefined') {
+                next({...rest, type: onPending});
             }
 
             const actionPromise = promise(socket);
 
             return actionPromise
                 .then((result) => {
-                    if (typeof result.error !== 'undefined' && typeof FAILURE !== 'undefined') {
-                        return next({...rest, result, type: FAILURE });
+                    if (typeof result.error !== 'undefined') {
+                        if (typeof onFailure !== 'undefined') {
+                            return next({...rest, result, type: onFailure });
+                        }
+
+                        return false;
                     }
 
                     let successDispatch;
-
-                    if (typeof SUCCESS !== 'undefined') {
-                        successDispatch = next({...rest, result, type: SUCCESS });
-                    }
 
                     if (typeof onSuccess === 'function') {
                         onSuccess(result);
                     }
 
+                    if (typeof onSuccess !== 'undefined') {
+                        successDispatch = next({...rest, result, type: onSuccess });
+                    }
+
                     return successDispatch;
                 })
                 .catch((error) => {
-                    return next({...rest, error, type: FAILURE });
+                    if (typeof onFailure !== 'undefined') {
+                        return next({...rest, error, type: onFailure });
+                    }
                 });
         };
     };

@@ -1,13 +1,11 @@
 import io from 'socket.io-client';
-
-// Example conf. You can move this to your config file.
-const host = 'http://localhost:3002';
+import {api as apiConfig} from '../config/api';
 
 export default class socketAPI {
     socket;
 
     connect() {
-        this.socket = io.connect(host);
+        this.socket = io.connect(apiConfig.url);
         return new Promise((resolve, reject) => {
             this.socket.on('connect', () => resolve());
             this.socket.on('connect_error', (error) => reject(error));
