@@ -1,10 +1,8 @@
 import * as socket from 'socket.io';
 import GameServiceFactory from './factories/GameServiceFactory';
-import GameService from './services/Game';
 import UserService from './services/User';
 import UserModel from './models/User';
 import GameModel from './models/Game';
-import GamesPool from './models/GamesPool';
 import RoomModel from './models/Room';
 import PlayerModel from './models/Player';
 import MemoStorage from './storages/Memo';
@@ -17,17 +15,22 @@ import * as DeckofcardsConfig from './config/deckofcards';
 const port = 3002;
 var io = socket.listen(port);
 
-var MemoStorageInstance = new MemoStorage();
+/* to not use database just store everything in memory*/
+var UsersStorageInstance = new MemoStorage();
+var RoomsStorageInstance = new MemoStorage();
+var AvailableRoomsStorageInstance = new MemoStorage();
+
+/* cards api */
 var DecoCardsApiInstance = new DecoCardsApi(DeckofcardsConfig, axios);
 
-var GameServiceFactoryInstance = new GameServiceFactory(MemoStorageInstance, DecoCardsApiInstance);
+var GameServiceFactoryInstance = new GameServiceFactory(UsersStorageInstance, RoomsStorageInstance, AvailableRoomsStorageInstance, DecoCardsApiInstance);
 
-let GameServiceInstance = GameServiceFactoryInstance.makeGameService();
+/*let GameServiceInstance = GameServiceFactoryInstance.makeGameService();
 GameServiceInstance.setRoom({id: 1});
 
 GameServiceInstance.createDeck()
     .then(() => GameServiceInstance.drawToPlayers())
-    .then((cards) => console.log('done'));
+    .then((cards) => console.log('done'));*/
 /*.then(() => {
     GameServiceInstance.drawToPlayers();
 });*/
@@ -41,11 +44,36 @@ io.on('connection', (client) => {
         UserModelInstance.setLogin(login.trim());
         UserModelInstance.setClientId(client.id);
 
-        let UserServiceInstance = new UserService(MemoStorageInstance);
+        let UserServiceInstance = new UserService(UsersStorageInstance);
         UserServiceInstance.setUser(UserModelInstance);
         UserServiceInstance.save();
 
         return callback(true);
+    });
+    client.on('getGameData', (data, callback) => {
+        let {roomId, login} = data;
+
+        const playerId = login;
+
+        let GameServiceInstance = GameServiceFactoryInstance.makeGameService();
+
+        GameServiceInstance.initiateById(roomId);
+
+        if (!GameServiceInstance.isGame()) {
+            let error = new RoomError('Game not found');
+
+            return callback(error);
+        }
+
+        let inGame = GameServiceInstance.alreadyInGame(playerId);
+
+        if (!inGame) {
+            let error = new RoomError('Game is unavailable');
+
+            return callback(error);
+        }
+
+        callback(GameServiceInstance.publicData(login));
     });
     client.on('profileEdit', (data, callback) => {
         let {login, name} = data;
@@ -55,7 +83,7 @@ io.on('connection', (client) => {
         UserModelInstance.setLogin(login.trim());
         UserModelInstance.setClientId(client.id);
 
-        let UserServiceInstance = new UserService(MemoStorageInstance);
+        let UserServiceInstance = new UserService(UsersStorageInstance);
         UserServiceInstance.setUser(UserModelInstance);
 
         let error = new UserError();
@@ -84,7 +112,7 @@ io.on('connection', (client) => {
 
         let GameServiceInstance = GameServiceFactoryInstance.makeGameService();
 
-        GameServiceInstance.createDeck();
+        //GameServiceInstance.createDeck();
 
         let GameModelInstance = new GameModel();
         GameModelInstance.setCurrentTurnPlayerId(playerId);
@@ -166,31 +194,34 @@ io.on('connection', (client) => {
             GameServiceInstance.updatePlayers();
         }
 
-        GameServiceInstance.getPlayersConnections().forEach(clientId => {
+        GameServiceInstance.getPlayersConnections().forEach(data => {
             //if (player.id !== playerId) {
-                io.to(clientId).emit('playerConnected', {
+                io.to(data.clientId).emit('playerConnected', {
                     players: GameServiceInstance.getPlayers()
                 });
             //}
         });
 
         if (GameServiceInstance.isFullRoom()) {
-            if (!GameServiceInstance.isDeck()) {
-                GameServiceInstance.createDeck().then(() => {
-                    GameServiceInstance.drawToPlayers().then(() => {
-                        GameServiceInstance.getPlayersConnections().forEach(clientId => {
-                            io.to(clientId).emit('gameBegins', GameServiceInstance.publicData());
-                        });
+            console.log('full room');
+            GameServiceInstance.createDeck()
+                .then(() => {
+                    console.log('draw to players');
+                    return GameServiceInstance.drawToPlayers();
+                })
+                .catch(() => {
+                    console.log('catch 1')
+                })
+                .then(() => {
+                    console.log('game begins');
+                    GameServiceInstance.getPlayersConnections().forEach(data => {
+                        io.to(data.clientId).emit('gameBegins', GameServiceInstance.publicData(data.login));
                     });
-                }).catch(() => {
-                    // send a error here
-                    console.error('creatingDeck error:', err);
-                });
-            } else {
-                GameServiceInstance.getPlayersConnections().forEach(clientId => {
-                    io.to(clientId).emit('gameBegins', GameServiceInstance.publicData());
-                });
-            }
+
+                })
+                .catch((err) => {
+                    console.log('catch 2', err)
+                })
         }
 
         callback(true);
