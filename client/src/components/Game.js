@@ -41,7 +41,7 @@ export default class Game extends React.PureComponent {
         }
 
         return this.props.players.map((player, index) => {
-            return <div key={player.id}>Player #{index} — {player.name}</div>
+            return <div key={player.id}>{player.login} — {player.name}</div>
         });
     }
     render () {

@@ -19,7 +19,7 @@ export const getPlayingCard = createSelector(
         if (typeof cards === 'undefined') {
             return '';
         }
-
+        console.log('getPlayingCard', cards.playingCard);
         return cards.playingCard;
     }
 );
@@ -32,6 +32,28 @@ export const getDealAreaBounds = createSelector(
         }
 
         return cards.dealAreaBounds;
+    }
+);
+
+export const getPlayersAreasBounds = createSelector(
+    [getCards],
+    (cards) => {
+        if (typeof cards === 'undefined') {
+            return {};
+        }
+
+        return cards.boundsByPlayer;
+    }
+);
+
+export const getIsClearingDealingArea = createSelector(
+    [getCards],
+    (cards) => {
+        if (typeof cards === 'undefined') {
+            return false;
+        }
+
+        return cards.clearingDealArea;
     }
 );
 

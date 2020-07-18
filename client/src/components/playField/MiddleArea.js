@@ -1,24 +1,46 @@
 import React from 'react';
-import LeftEnemyCards from "./middleArea/LeftEnemyCards";
-import RightEnemyCards from "./middleArea/RightEnemyCards";
+import SideEnemyCards from "./middleArea/SideEnemyCards";
 import DealArea from "./middleArea/DealArea";
+import {cardThrow as cardThrowConfig} from '../../config/animation';
 
 export default class MiddleArea extends React.PureComponent {
     render() {
-        let {leftPlayer, rightPlayer} = this.props;
+        let {
+            leftPlayer,
+            rightPlayer,
+            playersRendered,
+            setDealAreaBounds,
+            setPlayerBounds,
+            dealCards,
+            dealAreaBounds,
+            isClearingDealArea,
+            playersCount,
+        } = this.props;
 
         return (
             <div
-                ref={(el) => {
-                    if (!el) {
-                        return false;
-                    }
-                    this.props.setDealAreaBounds(el.getBoundingClientRect());
-                }}
                 className="middle-area">
-                <LeftEnemyCards player={leftPlayer}/>
-                <DealArea/>
-                <RightEnemyCards player={rightPlayer}/>
+                <SideEnemyCards
+                    throwType={cardThrowConfig.types.second}
+                    containerClass={'left-enemy-cards'}
+                    player={leftPlayer}
+                    dealAreaBounds={dealAreaBounds}
+                    setPlayerBounds={setPlayerBounds}
+                />
+                <DealArea
+                    playersCount={playersCount}
+                    isClearingDealArea={isClearingDealArea}
+                    dealCards={dealCards}
+                    setDealAreaBounds={setDealAreaBounds}
+                    playersRendered={playersRendered}
+                />
+                <SideEnemyCards
+                    throwType={cardThrowConfig.types.fifth}
+                    containerClass={'right-enemy-cards'}
+                    player={rightPlayer}
+                    dealAreaBounds={dealAreaBounds}
+                    setPlayerBounds={setPlayerBounds}
+                />
             </div>
         );
     }

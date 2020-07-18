@@ -1,8 +1,19 @@
 import { createSelector } from 'reselect'
 
+/*const getPlayingCardEvent = (player, playedCard) => {
+    if (!playedCard) {
+        return player;
+    }
+    if (playedCard.playerId !== player.id) {
+        return player;
+    }
+
+    return {...player, playingCard: playedCard.card};
+};*/
+
 const getPlayers = state => state.game.players;
 const getCurrentTurnPlayerId = state => state.game.currentTurnPlayerId;
-const getEnemyPlayers = state => state.game.players.filter(player => player.login !== state.user.login);
+const getEnemyPlayers = state => state.game.players.filter(player => player.login !== state.user.login)/*.map(player => getPlayingCardEvent(player, getPlayedCard(state)))*/;
 const getMyLogin = state => state.user.login;
 const getMyId = state => state.user.login;
 

@@ -1,5 +1,5 @@
 import React from 'react';
-import MyCards from './MyCards';
+import MyCards from './lowArea/MyCards';
 
 export default class LowArea extends React.PureComponent {
     render() {

@@ -12,15 +12,17 @@ export default class Home extends React.PureComponent {
     }
 
     startGame = () => {
-        if (this.props.login === '') {
+        let {login, name, roomId, startGameRequest} = this.props;
+
+        if (login === '') {
             // show error here
             return false;
         }
-        if (this.props.roomId) {
-            return this.goToRoom(this.props.roomId);
+        if (roomId) {
+            return this.goToRoom(roomId);
         }
 
-        this.props.startGameRequest(this.props.login, this.props.name, 3);
+        startGameRequest(login, name, 2);
     };
     findGames = () => {
         if (this.props.login === '') {

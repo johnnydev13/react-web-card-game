@@ -1,4 +1,4 @@
-import { roomCreated, playerConnected, beginGame } from '../actions/game';
+import { roomCreated, playerConnected, beginGame, cardPlayed, newDealSequence, connectErrorSequence } from '../actions/game';
 import { SOCKET } from '../constants/apiRequestTypes';
 
 export default function socketMiddleware(socket) {
@@ -9,6 +9,13 @@ export default function socketMiddleware(socket) {
             // socket is not connected
         });
 
+        socket.on("connect_error", (err) => {
+            dispatch(connectErrorSequence(err));
+        });
+        socket.on("reconnect_error", (err) => {
+            console.log(err);
+            dispatch(connectErrorSequence(err));
+        });
         socket.on("roomCreated", (data) => {
             dispatch(roomCreated(data.id));
         });
@@ -18,8 +25,15 @@ export default function socketMiddleware(socket) {
         });
 
         socket.on("gameBegins", (data) => {
-            console.log('game begins server event', data);
             dispatch(beginGame(data));
+        });
+
+        socket.on("cardPlayed", (data) => {
+            dispatch(cardPlayed(data));
+        });
+
+        socket.on("newDeal", (data) => {
+            dispatch(newDealSequence(data));
         });
 
         return next => action => {

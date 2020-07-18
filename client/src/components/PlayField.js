@@ -3,6 +3,7 @@ import './playField/styles';
 import LowArea from './playField/LowArea';
 import TopArea from './playField/TopArea';
 import MiddleArea from './playField/MiddleArea';
+import {savePlayerAreaBounds} from "../actions/cards";
 
 export default class PlayField extends React.PureComponent {
     componentDidMount() {
@@ -13,7 +14,10 @@ export default class PlayField extends React.PureComponent {
     }
 
     setDealAreaBounds = (bounds) => {
-        this.props.saveDealAreaBounds(bounds.width, bounds.height, bounds.top, bounds.left);
+        this.props.saveDealAreaBounds(bounds.width, bounds.height, bounds.left, bounds.top);
+    };
+    setPlayerBounds = (playerId, bounds) => {
+        //this.props.savePlayerAreaBounds(playerId, bounds.width, bounds.height, bounds.left, bounds.top);
     };
 
     onMyCardClickHandle = (code, cardBounds) => {
@@ -31,6 +35,25 @@ export default class PlayField extends React.PureComponent {
         return tryMyCardClick(code);
     };
 
+    getPlayerBounds = (player) => {
+       /* if (!player) {
+            return false;
+        }
+
+        return typeof this.props.playersAreasBounds[player.id] === 'undefined' ? false : this.props.playersAreasBounds[player.id];*/
+    };
+    getTopPlayersBounds = (players) => {
+        if (!players) {
+            return false;
+        }
+
+        let bounds = [];
+        players.forEach(player => {
+            bounds.push(this.getPlayerBounds(player));
+        });
+        return bounds;
+    };
+
     render() {
         let {
             me,
@@ -40,17 +63,32 @@ export default class PlayField extends React.PureComponent {
             clickedCardCode,
             playingCard,
             dealAreaBounds,
+            dealCards,
+            isClearingDealArea,
+            playersCount,
         } = this.props;
 
         return (
             <div className="game-table">
                 <TopArea
-                    topPlayers={topPlayers}/>
+                    playersBounds={this.getTopPlayersBounds(topPlayers)}
+                    topPlayers={topPlayers}
+                    setPlayerBounds={this.setPlayerBounds}
+                    dealAreaBounds={dealAreaBounds}
+                />
 
                 <MiddleArea
+                    playersCount={playersCount}
+                    isClearingDealArea={isClearingDealArea}
                     setDealAreaBounds={this.setDealAreaBounds}
+                    dealAreaBounds={dealAreaBounds}
                     rightPlayer={rightPlayer}
+                    rightPlayerBounds={this.getPlayerBounds(rightPlayer)}
                     leftPlayer={leftPlayer}
+                    leftPlayerBounds={this.getPlayerBounds(leftPlayer)}
+                    dealCards={dealCards}
+                    playersRendered={leftPlayer || topPlayers.length > 0}
+                    setPlayerBounds={this.setPlayerBounds}
                     />
 
                 <LowArea

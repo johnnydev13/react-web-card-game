@@ -3,7 +3,7 @@ import TopEnemyCards from './topArea/TopEnemyCards';
 
 export default class TopArea extends React.PureComponent {
     render() {
-        let { topPlayers } = this.props;
+        let { topPlayers, setPlayerBounds, dealAreaBounds } = this.props;
 
         if (topPlayers.length === 0) {
             return false;
@@ -12,7 +12,13 @@ export default class TopArea extends React.PureComponent {
         return (
             <div className="top-area">
                 {topPlayers.map((player, index) =>
-                    <TopEnemyCards key={index} player={player}/>
+                    <TopEnemyCards
+                        dealAreaBounds={dealAreaBounds}
+                        key={index}
+                        index={index}
+                        player={player}
+                        setPlayerBounds={setPlayerBounds}
+                    />
                 )}
             </div>
         );

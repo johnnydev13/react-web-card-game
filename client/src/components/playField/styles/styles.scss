@@ -24,20 +24,24 @@ $backCardBG: url('../../../assets/images/cardback.png') no-repeat center center;
   .top-area {
     flex: 1 25%;
   }
+  .my-card, .animated-card, .deal-card {
+    float: left;
+    width: 100px;
+    height: 150px;
+    margin-left: -40px;
+    cursor: pointer;
+    transition: $transition;
 
+    border-radius: 7px;
+  }
+
+  .deal-card {
+    margin-left: 0;
+  }
   .my-cards {
     display: inline-block;
 
-    .my-card {
-      float: left;
-      width: 100px;
-      height: 150px;
-      margin-left: -40px;
-      cursor: pointer;
-      transition: $transition;
 
-      border-radius: 7px;
-    }
     .my-card.clicked {
       margin-top: -40px;
       box-shadow: 0 0 5px #777;

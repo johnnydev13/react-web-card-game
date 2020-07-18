@@ -1,7 +1,6 @@
 import React from 'react';
-import Radium from 'radium';
 
-class Card extends React.PureComponent {
+export default class SideCard extends React.PureComponent {
     render() {
         return (
             <div className='side-card'></div>
@@ -9,4 +8,3 @@ class Card extends React.PureComponent {
     }
 }
 
-export default Radium(Card);

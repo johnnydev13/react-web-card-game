@@ -1,10 +1,17 @@
 import * as playerTypes from '../constants/playerTypes';
 import { SOCKET } from '../constants/apiRequestTypes';
+import {cardThrow, dealCardClearing as dealCardClearingConfig} from '../config/animation';
+import { clearDealArea } from './cards';
+import { showDealWinner } from './ui';
 
 export const ADD_PLAYER   = 'ADD_PLAYER';
 export const BEGIN_GAME   = 'BEGIN_GAME';
+export const NEW_DEAL     = 'NEW_DEAL';
 export const ROOM_CREATED = 'ROOM_CREATED';
 export const END_GAME     = 'END_GAME';
+
+export const CARD_PLAYED      = 'CARD_PLAYED';
+export const CARD_PLAYED_END  = 'CARD_PLAYED_END';
 
 export const PLAYER_CONNECTED = 'PLAYER_CONNECTED';
 
@@ -24,6 +31,8 @@ export const GAME_DATA_SUCCESS = 'GAME_DATA_SUCCESS';
 
 export const BEGIN_GAME_PENDING = 'BEGIN_GAME_PENDING';
 export const END_GAME_PENDING   = 'END_GAME_PENDING';
+
+export const CONNECT_ERROR = 'CONNECT_ERROR';
 
 //const
 const generatePlayerId = players => {
@@ -115,6 +124,24 @@ export const beginGame = (result) => {
         result: result,
     }
 };
+
+const cardPlayedAction = (result) => ({
+    type:   CARD_PLAYED,
+    result: result,
+});
+
+const cardPlayedEndAction = (result) => ({
+    type:   CARD_PLAYED_END,
+    result: result,
+});
+export const cardPlayed = (result) => (dispatch, getState) => {
+    setTimeout(function () {
+        dispatch(cardPlayedEndAction(result));
+    }, cardThrow.speed * 1000);
+
+    return dispatch(cardPlayedAction(result));
+};
+
 export const pendingStart = () => {
     return {
         type: BEGIN_GAME_PENDING,
@@ -124,4 +151,36 @@ export const pendingStop = () => {
     return {
         type: END_GAME_PENDING,
     }
+};
+
+export const newDeal = (result) => {
+    return {
+        type: NEW_DEAL,
+        result: result,
+    }
+};
+export const clearDealCards = (result) => {
+    return {
+        type: NEW_DEAL,
+        result: result,
+    }
+};
+export const newDealSequence = (result) => (dispatch, getState) =>  {
+    dispatch(clearDealArea());
+
+    dispatch(showDealWinner(result.dealWinners));
+
+    setTimeout(function () {
+        dispatch(newDeal(result));
+    }, dealCardClearingConfig.speed * 1000);
+};
+
+export const connectError = (err) => {
+    return {
+        type: CONNECT_ERROR,
+        error: err,
+    }
+};
+export const connectErrorSequence = (err) => (dispatch, getState) => {
+    dispatch(connectError(err));
 };

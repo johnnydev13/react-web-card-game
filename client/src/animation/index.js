@@ -39,7 +39,6 @@ export const move = (fromLeft, fromTop, toLeft, toTop) => {
     return getAnimation(getMoveFrames(fromLeft, fromTop, toLeft, toTop), 'move');
 };
 
-
 export const moveSpin = (fromLeft, fromTop, toLeft, toTop) => {
     let animation = getMoveFrames(fromLeft, fromTop, toLeft, toTop);
     let keyFrames = Object.keys(animation);
@@ -47,7 +46,6 @@ export const moveSpin = (fromLeft, fromTop, toLeft, toTop) => {
 
     const rotateTo = cardThrowConfig.rotateTo;
     let rotateStep = rotateTo / keysCount;
-
 
     for (let i = 0; i < keysCount; i++) {
         let keyFrame = keyFrames[i];
@@ -63,44 +61,15 @@ const calcAnimationValueForIteration = (size, step, interation, interationsCount
     return newSize;
 };
 
-/*export const moveThrowOld = (fromLeft, fromTop, toLeft, toTop, width, height) => {
-    let animation = getMoveFrames(fromLeft, fromTop, toLeft, toTop);
+export const moveThrow = (fromLeft, fromTop, toLeft, toTop, throwType) => {
+    let animation = getMoveFrames(fromLeft, fromTop, toLeft, toTop, throwType);
     let keyFrames = Object.keys(animation);
     let keysCount = keyFrames.length;
 
-    const rotateTo = cardThrowConfig.rotateTo;
-    const resizeRatio = cardThrowConfig.resizeRatio;
-    let rotateStep = rotateTo / keysCount;
-
-    let halfWay = (keysCount / 2);
-    let widthDiff = (width * resizeRatio) - width;
-    let widthStep = widthDiff / halfWay;
-    let heightDiff = (height * resizeRatio) - height;
-    let heightStep = heightDiff / halfWay;
-
-    for (let i = 0; i < keysCount; i++) {
-        let keyFrame = keyFrames[i];
-        let newWidth = calcAnimationValueForIteration(width, widthStep, i, keysCount);
-        let newHeight = calcAnimationValueForIteration(height, heightStep, i, keysCount);
-
-        animation[keyFrame] = {
-            ...animation[keyFrame],
-            transform: 'rotate(' + (rotateStep * i)  + 'deg)',
-            width: newWidth + 'px',
-            height: newHeight + 'px',
-        }
-    }
-
-    return getAnimation(animation, 'move');
-};*/
-
-export const moveThrow = (fromLeft, fromTop, toLeft, toTop) => {
-    let animation = getMoveFrames(fromLeft, fromTop, toLeft, toTop);
-    let keyFrames = Object.keys(animation);
-    let keysCount = keyFrames.length;
-
-    const rotateTo = cardThrowConfig.rotateTo;
+    const rotateTo = cardThrowConfig.rotateToByType[throwType];
     const scaleRatio = cardThrowConfig.resizeRatio;
+
+
     let rotateStep = rotateTo / keysCount;
     let scaleStep = (scaleRatio - 1) / (keysCount / 2);
 
@@ -111,20 +80,92 @@ export const moveThrow = (fromLeft, fromTop, toLeft, toTop) => {
         animation[keyFrame] = {
             ...animation[keyFrame],
             transform: 'rotate(' + (rotateStep * i)  + 'deg) scale(' + scale + ',' + scale + ')',
+            zIndex: throwType,
         }
     }
 
     return getAnimation(animation, 'move');
 };
 
-export const moveThrowStyles = (fromLeft, fromTop, toLeft, toTop, width, height) => {
-    let moveThrowFrames = moveThrow(fromLeft, fromTop, toLeft, toTop, width, height);
+export const getPositionOffsetByType = (left, top, throwType) => {
+    const offsets = cardThrowConfig.positionOffsetByType[throwType];
+
+    return {
+        left: left + offsets.left,
+        top: top + offsets.top,
+    }
+};
+export const getEndStyles = (toLeft, toTop, throwType) => {
+    let { left, top } = getPositionOffsetByType(toLeft, toTop, throwType);
+
+    return {
+        transform: 'rotate(' + cardThrowConfig.rotateToByType[throwType] + 'deg)',
+        position: 'absolute',
+        left: left + 'px',
+        top: top + 'px',
+        zIndex: throwType,
+        //margin: '0',
+    };
+};
+export const moveThrowStyles = (fromLeft, fromTop, toLeft, toTop, throwType) => {
+    let { left, top } = getPositionOffsetByType(toLeft, toTop, throwType);
+
+    let moveThrowFrames = moveThrow(fromLeft, fromTop, left, top, throwType);
 
     return {
         ...moveThrowFrames,
-        transform: 'rotate(' + cardThrowConfig.rotateTo + 'deg)',
-        position: 'absolute',
-        left: toLeft + 'px',
-        top: toTop + 'px',
+        ...getEndStyles(toLeft, toTop, throwType)
     }
+};
+
+export const throwFromNowhereStyles = (fromLeft, fromTop, toLeft, toTop, throwType) => {
+    /* TODO make fading out animation here*/
+
+    return moveThrowStyles(fromLeft, fromTop, toLeft, toTop, throwType);
+};
+
+export const throwToNowhereStyles = (fromLeft, fromTop, toLeft, toTop, throwType) => {
+    /* TODO make fading out animation here*/
+
+    return moveThrowStyles(fromLeft, fromTop, toLeft, toTop, throwType);
+};
+
+export const getAreaThrowPoint = (areaBounds, throwType) => {
+    let { left, top } = getPositionOffsetByType(areaBounds.width / 2 + areaBounds.left, areaBounds.top, throwType);
+
+    return {
+        top,
+        left
+    }
+};
+
+const rand = (max) => {
+    return Math.ceil(Math.random() * Math.floor(max))
+};
+
+export const getRandomOutsidePosition = (elementWith, elementHeight) => {
+    let toLeft, toTop;
+    let isLeftRandom = rand(2) === 2;
+    let gap = 200;
+
+    switch (Math.ceil(Math.random() * Math.floor(2))) {
+        case 1:
+            toLeft = isLeftRandom ? rand(elementWith) : gap * -1;
+            toTop  = !isLeftRandom ? rand(elementHeight) : gap * -1;
+            break;
+        case 2:
+            toLeft = isLeftRandom ? rand(elementWith) : elementWith + gap;
+            toTop  = !isLeftRandom ? rand(elementHeight) : elementHeight + gap;
+            break;
+    }
+
+
+
+    /*console.log('left', left);
+    console.log('elementWith', elementWith);
+    console.log('top', top);
+    console.log('elementHeight', elementHeight);*/
+
+
+    return { toLeft, toTop };
 };
