@@ -5,14 +5,11 @@ class Memo {
 
     set(key, data) {
         this.data[key] = data;
-        console.log('set this.data', key, this.data);
     }
     getAll() {
         return this.data;
     }
     get(key) {
-        console.log('get this.data', key, this.data);
-
         return this.data[key];
     }
     delete(key) {

@@ -5,6 +5,8 @@ export default class Player {
         this.name = null;
         this.clientId = null;
         this.cards = [];
+        this.dealWins = 0;
+        this.scores = 0;
     }
 
     setId(id) {
@@ -27,6 +29,8 @@ export default class Player {
         return {
             id:   this.id,
             name: this.name,
+            login: this.login,
+            wins: this.wins,
             cards: [],
         }
     }

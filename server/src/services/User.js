@@ -32,7 +32,6 @@ class User {
     }
 
     save() {
-        console.log('saving user', this.user);
         return this.storage.set(this.user.login, this.user);
     }
 }

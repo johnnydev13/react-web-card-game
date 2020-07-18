@@ -11,8 +11,9 @@ import RoomError from './errors/RoomError';
 import UserError from './errors/UserError';
 import axios from 'axios';
 import * as DeckofcardsConfig from './config/deckofcards';
+import { socketPort } from './config/server';
 
-const port = 3002;
+const port = socketPort;
 var io = socket.listen(port);
 
 /* to not use database just store everything in memory*/
@@ -24,16 +25,6 @@ var AvailableRoomsStorageInstance = new MemoStorage();
 var DecoCardsApiInstance = new DecoCardsApi(DeckofcardsConfig, axios);
 
 var GameServiceFactoryInstance = new GameServiceFactory(UsersStorageInstance, RoomsStorageInstance, AvailableRoomsStorageInstance, DecoCardsApiInstance);
-
-/*let GameServiceInstance = GameServiceFactoryInstance.makeGameService();
-GameServiceInstance.setRoom({id: 1});
-
-GameServiceInstance.createDeck()
-    .then(() => GameServiceInstance.drawToPlayers())
-    .then((cards) => console.log('done'));*/
-/*.then(() => {
-    GameServiceInstance.drawToPlayers();
-});*/
 
 io.on('connection', (client) => {
     client.on('sendConnection', (data, callback) => {
@@ -73,7 +64,12 @@ io.on('connection', (client) => {
             return callback(error);
         }
 
-        callback(GameServiceInstance.publicData(login));
+        callback(GameServiceInstance.publicData(login, true));
+
+        /* testing, remove*/
+        /*GameServiceInstance.getPlayersConnections().forEach(data => {
+            io.to(data.clientId).emit('cardPlayed', GameServiceInstance.publicData(data.login));
+        });*/
     });
     client.on('profileEdit', (data, callback) => {
         let {login, name} = data;
@@ -137,7 +133,61 @@ io.on('connection', (client) => {
 
         client.emit('roomCreated', RoomModelInstance.get());
 
-        //console.log('total games', games);
+    });
+
+    client.on('playCard', (data, callback) => {
+        let { cardCode, login, roomId } = data;
+        let playerId = login;
+
+        let GameServiceInstance = GameServiceFactoryInstance.makeGameService();
+
+        GameServiceInstance.initiateById(roomId);
+
+        if (!GameServiceInstance.isGame()) {
+            return callback(new RoomError('Game not found'));
+        }
+
+        let player = GameServiceInstance.getPlayer(playerId);
+
+        if (!player) {
+            return callback(new RoomError('Something went wrong, not in the game'));
+        }
+
+        let playResult = GameServiceInstance.playCard(playerId, cardCode);
+
+        if (!playResult) {
+            return callback(new RoomError('Couldn\'t play card'));
+        }
+
+        GameServiceInstance.getPlayersConnections().forEach(data => {
+            //if (login !== data.login) {
+                io.to(data.clientId).emit('cardPlayed', GameServiceInstance.publicData(data.login));
+            //}
+        });
+
+        if (GameServiceInstance.isDeal()) {
+
+            GameServiceInstance.setDealWinner();
+            GameServiceInstance.newDeal();
+
+            if (GameServiceInstance.isGameOver()) {
+                GameServiceInstance.getPlayersConnections().forEach(data => {
+                    io.to(data.clientId).emit('gameOver', GameServiceInstance.publicData(data.login));
+                });
+
+                GameServiceInstance.destroyGame();
+
+                callback(true);
+            }
+
+            GameServiceInstance.getPlayersConnections().forEach(data => {
+                io.to(data.clientId).emit('newDeal', GameServiceInstance.publicData(data.login));
+            });
+        }
+
+        GameServiceInstance.updateGame();
+
+        callback(true);
     });
 
     client.on('findGames', (data, callback) => {
@@ -184,6 +234,7 @@ io.on('connection', (client) => {
         }
 
         if (!inGame) {
+
             let PlayerModelInstance = new PlayerModel();
             PlayerModelInstance.setId(playerId);
             PlayerModelInstance.setLogin(playerLogin);
@@ -203,24 +254,21 @@ io.on('connection', (client) => {
         });
 
         if (GameServiceInstance.isFullRoom()) {
-            console.log('full room');
             GameServiceInstance.createDeck()
                 .then(() => {
-                    console.log('draw to players');
                     return GameServiceInstance.drawToPlayers();
                 })
                 .catch(() => {
-                    console.log('catch 1')
+
                 })
                 .then(() => {
-                    console.log('game begins');
                     GameServiceInstance.getPlayersConnections().forEach(data => {
                         io.to(data.clientId).emit('gameBegins', GameServiceInstance.publicData(data.login));
                     });
 
                 })
                 .catch((err) => {
-                    console.log('catch 2', err)
+
                 })
         }
 
@@ -228,11 +276,12 @@ io.on('connection', (client) => {
     });
 
     client.on('disconnect', function (client, a, b) {
-        console.log('disconnected', client);
+
     });
 });
 
 console.log('listening on port ', port);
+console.log('to change socket port, edit config/server.js');
 
 /*
 
