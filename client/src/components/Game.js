@@ -1,5 +1,7 @@
-import React from "react";
-import {Link} from "react-router-dom";
+import React from 'react';
+import LinkButton from './elements/LinkButton';
+import InfoMessage from './elements/InfoMessage';
+import { ListGroup, ProgressBar } from 'react-bootstrap';
 
 export default class Game extends React.PureComponent {
     state = {
@@ -26,7 +28,10 @@ export default class Game extends React.PureComponent {
         return null;
     }
 
-    renderError() {
+    goBack = () => {
+        this.props.history.push('/')
+    };
+    renderError = () =>  {
         if (!this.props.errorMessage) {
             return false;
         }
@@ -34,26 +39,34 @@ export default class Game extends React.PureComponent {
         return (
             <div>Error: {this.props.errorMessage}</div>
         )
-    }
-    renderPlayers() {
+    };
+    renderPlayers = () => {
         if (this.props.players.length === 0) {
-            return false;
+            return <InfoMessage text={'Something went horribly wrong, no players found'}/>;
         }
 
-        return this.props.players.map((player, index) => {
-            return <div key={player.id}>{player.login} — {player.name}</div>
+        let rows = [];
+        this.props.players.forEach((player, index) => {
+            rows.push(<ListGroup.Item key={player.id}>{player.login} — {player.name}</ListGroup.Item>)
         });
-    }
+
+        return (
+            <ListGroup>
+                <ListGroup.Item active>Connected players:</ListGroup.Item>
+                {rows}
+            </ListGroup>);
+    };
+
     render () {
         return (
-            <span>
-                Game
-                <br/>
-                <Link to='/'>Go back Home</Link>
+            <div className={'body'}>
+                <h2>Waiting for players</h2>
+                <ProgressBar animated now={100} />
+                <LinkButton onClick={this.goBack} text={'<--- return to the Home page'}/>
 
                 {this.renderError()}
                 {this.renderPlayers()}
-            </span>
+            </div>
         );
     }
 }

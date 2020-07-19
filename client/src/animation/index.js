@@ -1,5 +1,6 @@
 import { pulse } from 'react-animations';
 import Radium from 'radium';
+
 import { cardThrow as cardThrowConfig } from '../config/animation';
 
 const getAnimation = (animation, animationName, ...styles) => ({...{
@@ -39,7 +40,7 @@ export const move = (fromLeft, fromTop, toLeft, toTop) => {
     return getAnimation(getMoveFrames(fromLeft, fromTop, toLeft, toTop), 'move');
 };
 
-export const moveSpin = (fromLeft, fromTop, toLeft, toTop) => {
+/*export const moveSpin = (fromLeft, fromTop, toLeft, toTop) => {
     let animation = getMoveFrames(fromLeft, fromTop, toLeft, toTop);
     let keyFrames = Object.keys(animation);
     let keysCount = keyFrames.length;
@@ -53,7 +54,7 @@ export const moveSpin = (fromLeft, fromTop, toLeft, toTop) => {
     }
 
     return getAnimation(animation, 'move');
-};
+};*/
 
 const calcAnimationValueForIteration = (size, step, interation, interationsCount) => {
     let halfWay = interationsCount / 2;
@@ -146,26 +147,53 @@ const rand = (max) => {
 export const getRandomOutsidePosition = (elementWith, elementHeight) => {
     let toLeft, toTop;
     let isLeftRandom = rand(2) === 2;
-    let gap = 200;
+    let gap = 300;
 
     switch (Math.ceil(Math.random() * Math.floor(2))) {
         case 1:
             toLeft = isLeftRandom ? rand(elementWith) : gap * -1;
             toTop  = !isLeftRandom ? rand(elementHeight) : gap * -1;
             break;
-        case 2:
+        default:
             toLeft = isLeftRandom ? rand(elementWith) : elementWith + gap;
             toTop  = !isLeftRandom ? rand(elementHeight) : elementHeight + gap;
             break;
+
     }
-
-
-
-    /*console.log('left', left);
-    console.log('elementWith', elementWith);
-    console.log('top', top);
-    console.log('elementHeight', elementHeight);*/
-
 
     return { toLeft, toTop };
 };
+
+/*export const getThrowTypeByPlayersCount = (currentPlayerIndex, playersCount) => {
+    /*
+     * the point is to make fixed animation types depending on players count
+     * whis is not supposed to be here
+     *
+     * TODO: make it not here!!
+     */
+    /*let throwType;
+
+    if (currentPlayerIndex === 0) {
+        throwType = cardThrowConfig.types.first;
+    } else {
+        switch (playersCount) {
+            case 2:
+                throwType = cardThrowConfig.types.third;
+                break;
+            case 3:
+                throwType = currentPlayerIndex === 1 ? cardThrowConfig.types.second : cardThrowConfig.types.fifth;
+                break;
+            case 4:
+                throwType = currentPlayerIndex === 1 ? cardThrowConfig.types.second : (currentPlayerIndex === 2 ? cardThrowConfig.types.third : cardThrowConfig.types.fifth);
+                break;
+            case 5:
+                throwType = cardThrowConfig.types[Object.keys(cardThrowConfig.types)[currentPlayerIndex]];
+                break;
+            default:
+                throwType = cardThrowConfig.types.first;
+                break;
+        }
+    }
+
+    return throwType;
+};*/

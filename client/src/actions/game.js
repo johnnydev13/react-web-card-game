@@ -2,7 +2,7 @@ import * as playerTypes from '../constants/playerTypes';
 import { SOCKET } from '../constants/apiRequestTypes';
 import {cardThrow, dealCardClearing as dealCardClearingConfig} from '../config/animation';
 import { clearDealArea } from './cards';
-import { showDealWinner } from './ui';
+import { showDealMesssage, showGlobalError, showGameResults, hideDealMessage } from './ui';
 
 export const ADD_PLAYER   = 'ADD_PLAYER';
 export const BEGIN_GAME   = 'BEGIN_GAME';
@@ -135,6 +135,8 @@ const cardPlayedEndAction = (result) => ({
     result: result,
 });
 export const cardPlayed = (result) => (dispatch, getState) => {
+    dispatch(hideDealMessage());
+
     setTimeout(function () {
         dispatch(cardPlayedEndAction(result));
     }, cardThrow.speed * 1000);
@@ -159,16 +161,12 @@ export const newDeal = (result) => {
         result: result,
     }
 };
-export const clearDealCards = (result) => {
-    return {
-        type: NEW_DEAL,
-        result: result,
-    }
-};
-export const newDealSequence = (result) => (dispatch, getState) =>  {
-    dispatch(clearDealArea());
 
-    dispatch(showDealWinner(result.dealWinners));
+export const newDealSequence = (result) => (dispatch, getState) =>  {
+    setTimeout(() => {
+        dispatch(showDealMesssage('Deal winners', result.dealWinners.join(', ')));
+        dispatch(clearDealArea());
+    }, cardThrow.speed * 1000);
 
     setTimeout(function () {
         dispatch(newDeal(result));
@@ -182,5 +180,18 @@ export const connectError = (err) => {
     }
 };
 export const connectErrorSequence = (err) => (dispatch, getState) => {
+    dispatch(showGlobalError('Server is unreachable', err));
     dispatch(connectError(err));
+};
+
+export const endGame = (result) => {
+    return {
+        type: END_GAME,
+        result
+    }
+};
+export const gameOverSequence = (result) => dispatch =>  {
+    dispatch(showGameResults(result));
+    dispatch(endGame(result));
+    //dispatch(showDealMesssage('Game over', result.dealWinners.join(', ')));
 };

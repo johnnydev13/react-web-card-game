@@ -26,11 +26,9 @@ export default class socketAPI {
             if (!this.socket) return reject('No socket connection.');
             return this.socket.emit(event, data, (response) => {
                 if (response.error) {
-                    console.error(response.error);
                     return reject(response.error);
                 }
 
-                console.log('success socket request', response);
                 return resolve(response);
             });
         });

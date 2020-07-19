@@ -1,5 +1,6 @@
-import { roomCreated, playerConnected, beginGame, cardPlayed, newDealSequence, connectErrorSequence } from '../actions/game';
+import { roomCreated, playerConnected, beginGame, cardPlayed, newDealSequence, connectErrorSequence, gameOverSequence } from '../actions/game';
 import { SOCKET } from '../constants/apiRequestTypes';
+import { sendConnection } from '../actions/user';
 
 export default function socketMiddleware(socket) {
     return ({dispatch, getState}) => {
@@ -9,13 +10,18 @@ export default function socketMiddleware(socket) {
             // socket is not connected
         });
 
+        socket.on("connect", () => {
+            // sending user connection id to save on a server with user login
+            // in case of page reloading connection will change but login stays the same
+            dispatch(sendConnection());
+        });
         socket.on("connect_error", (err) => {
             dispatch(connectErrorSequence(err));
         });
         socket.on("reconnect_error", (err) => {
-            console.log(err);
             dispatch(connectErrorSequence(err));
         });
+
         socket.on("roomCreated", (data) => {
             dispatch(roomCreated(data.id));
         });
@@ -34,6 +40,10 @@ export default function socketMiddleware(socket) {
 
         socket.on("newDeal", (data) => {
             dispatch(newDealSequence(data));
+        });
+
+        socket.on("gameOver", (data) => {
+            dispatch(gameOverSequence(data));
         });
 
         return next => action => {

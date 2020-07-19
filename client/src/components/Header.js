@@ -1,6 +1,6 @@
 import React from "react";
-import { Toast } from "react-bootstrap";
-import { Link } from "react-router-dom";
+import Toast from './elements/Toast';
+import Modal from './elements/Modal';
 
 export default class Header extends React.PureComponent {
     renderError = () => {
@@ -11,24 +11,69 @@ export default class Header extends React.PureComponent {
         }
 
         return (
-            <Toast>
-                <Toast.Header onClick={this.props.hideGlobalError}>
-                    <strong className="mr-auto">An error has occurred</strong>
-                    <small>just now</small>
-                </Toast.Header>
-                <Toast.Body>
-                    {globalError}<br/>
-                    <Link to={'/'}>return to the main page</Link>
-                </Toast.Body>
-            </Toast>
+            <Toast
+                onClick={this.props.hideGlobalError}
+                title={'An error has occurred'}
+                text={globalError}
+            />
+        )
+    };
+
+    renderGameResults = () => {
+        let { gameResults, login } = this.props;
+
+        if (gameResults.length === 0) {
+            return false;
+        }
+
+        let rows = [];
+
+        /*gameResults.sort((a, b) => {
+            if (a.scores < b.scores) { return 1; }
+            if (a.scores > b.scores) { return -1; }
+            return 0;
+        });*/
+
+        //console.log('gameResults', gameResults);
+        Object.keys(gameResults.results).forEach(score => {
+            let players = gameResults.results[score];
+
+            let playersRows = [];
+
+            players.forEach((player, index) => {
+                playersRows.push(
+                    <span key={index} className={'player ' + (player.isWinner ? 'winner' : 'loser')}>
+                        {player.name}: {player.wins} wins <small className={'player-result'}>[{player.isWinner ? 'WIN' : 'LOSE'}]</small>{login === player.login ? <strong> — You</strong> : ''}
+                    </span>)
+            });
+            rows.push(
+                <span key={score} className="player-row">
+                    <span className="title">{score} scores:</span>
+                    <span className="value">{playersRows}</span>
+                </span>);
+        });
+
+        return (
+            <Modal
+                onClose={() => {
+                    this.props.hideGameResults();
+
+                    this.props.history.push('/');
+                }}
+                title={'Game results'}
+                text={rows}
+            />
         )
     };
 
     render() {
         return (
             <div className={'header'}>
+                {this.renderGameResults()}
+
                 <div className={'errors'}>
                 {this.renderError()}
+
                 </div>
             </div>
         )

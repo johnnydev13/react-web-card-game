@@ -1,8 +1,9 @@
 import React from 'react';
 import Card from "../cards/Card";
 import {getEndStyles, getPositionOffsetByType, getRandomOutsidePosition, throwToNowhereStyles} from '../../../animation';
-import { cardThrow as cardThrowConfig } from '../../../config/animation';
+import DealMessage from './DealMessage';
 
+//const getThrowTypeBy
 export default class DealArea extends React.PureComponent {
     state = {
         bounds: false,
@@ -24,7 +25,7 @@ export default class DealArea extends React.PureComponent {
     };
 
     renderDealCard = () => {
-        let { dealCards, isClearingDealArea, playersCount } = this.props;
+        let { dealCards, isClearingDealArea } = this.props;
 
         if (dealCards.length === 0 || !this.state.bounds) {
             return false;
@@ -37,54 +38,22 @@ export default class DealArea extends React.PureComponent {
         * TODO replace to another place
         */
         let left = bounds.width / 2 + bounds.left;
+
         let cards = [];
 
         for(let i = 0; i < dealCards.length; i++) {
             let card = dealCards[i];
 
-            let throwTypeKey = Object.keys(cardThrowConfig.types)[i];
-            //let throwType    = cardThrowConfig.types[throwTypeKey];
+            let throwType = card.playerNum;
+            //let throwType = getThrowTypeByPlayersCount(i, playersCount);
 
-
-            /*
-             * the point is to make fixed animation types depending on players count
-             * whis is not supposed to be here
-             *
-             * TODO: make it not here!!
-             */
-            let throwType;
-
-            if (i === 0) {
-                throwType = cardThrowConfig.types.first;
-            } else {
-                switch (playersCount) {
-                    case 2:
-                        throwType = cardThrowConfig.types.third;
-                        break;
-                    case 3:
-                        throwType = i === 1 ? cardThrowConfig.types.second : cardThrowConfig.types.fifth;
-                        break;
-                    case 4:
-                        throwType = i === 1 ? cardThrowConfig.types.second : (i === 2 ? cardThrowConfig.types.third : cardThrowConfig.types.fifth);
-                        break;
-                    case 5:
-                        throwType = cardThrowConfig.types[throwTypeKey];
-                        break;
-                    default:
-                        throwType = cardThrowConfig.types.first;
-                        break;
-                }
-            }
-
-
-            console.log('throwType', throwType);
             let styles;
 
             if (isClearingDealArea) {
                 let {toLeft, toTop} = getRandomOutsidePosition(this.state.windowWidth, this.state.windowHeight);
-                styles = this.getClearingStyles(left, bounds.top, throwType, toLeft, toTop);
+                styles = this.getClearingStyles(left, 20, throwType, toLeft, toTop);
             } else {
-                styles = getEndStyles(left, bounds.top, throwType)
+                styles = getEndStyles(left, 20, throwType)
             }
 
             cards.push(<Card
@@ -99,21 +68,30 @@ export default class DealArea extends React.PureComponent {
     };
 
     render() {
-        let { playersRendered, setDealAreaBounds } = this.props;
+        let { playersRendered, setDealAreaBounds, dealMessage } = this.props;
         return (
-            <div ref={(el) => {
-                if (!el || !playersRendered) {
-                    return false;
-                }
+            <div className="deal-area"
+                 ref={(el) => {
+                     if (!el || !playersRendered) {
+                         return false;
+                     }
 
-                if (!this.state.bounds) {
-                    this.setState({bounds: el.getBoundingClientRect()})
-                    setDealAreaBounds(el.getBoundingClientRect());
-                }
+                     if (!this.state.bounds) {
+                         let bounds = el.getBoundingClientRect();
+                         this.setState({bounds: bounds});
+                         setDealAreaBounds(bounds);
+                     }
+                 }}>
 
-            }} className="deal-area">
-                {this.renderDealCard()}
+                <DealMessage dealMessage={dealMessage}/>
+
+                <div
+                    className='deal-cards'
+                    >
+                    {this.renderDealCard()}
+                </div>
             </div>
+
         );
     }
 }

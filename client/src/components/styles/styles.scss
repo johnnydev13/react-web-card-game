@@ -2,8 +2,53 @@
   position: absolute;
   top: 0;
   right: 0;
+  width: 100%;
 
   .errors {
     float: right;
   }
+
+  .main-modal {
+    position: absolute;
+    width: 400px;
+    top: 50px;
+    left: calc(50% - 200px);
+    z-index: 10;
+
+    .player-row {
+      display: block;
+
+      span {
+        display: block;
+      }
+
+      .title {
+        font-weight: bold;
+      }
+
+      .player.winner {
+        color: green;
+      }
+
+      .player.loser {
+        color: red;
+      }
+    }
+  }
+}
+.buttons {
+  display: flex;
+  margin: 20px 0;
+}
+.card {
+
+}
+.center {
+  text-align: center;
+}
+.body, .user-profile {
+  padding: 20px;
+}
+.games-list {
+  margin-top: 20px;
 }

@@ -17,14 +17,25 @@ const getUser = () => {
 const initialState = {
     ...getUser(),
     errors: {},
+    profileSaved: false,
 };
 
 function user(state = initialState, action) {
+    //console.log('reduce user', action)
     switch (action.type) {
         case userActions.EDIT_PROFILE_PENDING:
-            return {...state, errors: {}};
+            return {
+                ...state,
+                errors: {},
+                profileSaved: false
+            };
         case userActions.EDIT_PROFILE_SUCCESS:
-            return {...state, name: action.result.name, login: action.result.login};
+            return {
+                ...state,
+                name: action.result.name,
+                login: action.result.login,
+                profileSaved: true,
+            };
         case userActions.EDIT_PROFILE_FAILURE:
             return {...state, errors: action.error};
 

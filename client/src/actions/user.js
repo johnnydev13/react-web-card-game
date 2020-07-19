@@ -10,7 +10,7 @@ export const editProfile = (login, name) => ({
     type: SOCKET,
     onPending: EDIT_PROFILE_PENDING,
     onSuccess: EDIT_PROFILE_SUCCESS,
-    onFilure: EDIT_PROFILE_FAILURE,
+    onFailure: EDIT_PROFILE_FAILURE,
     promise: (socket) => {
         return socket.emit('profileEdit', {login, name});
     },

@@ -1,15 +1,24 @@
 import React from 'react';
 import { pulseAnimation, moveThrowStyles, getAreaThrowPoint } from '../../../animation';
-import { cardThrow as cardThrowConfig } from '../../../config/animation';
 import Card from './Card';
+import { cardOnInit } from '../../../config/animation';
 
 export default class PlayerCard extends React.PureComponent {
+    state =  {
+        isInit: true,
+    };
+
+    componentDidMount() {
+        if (this.state.isInit) {
+            this.setState({isInit: false});
+        }
+    }
+
     getCardStyle = (isClicked, isPlaying, dealAreaBounds, cardBounds) => {
         if (isPlaying) {
-            let throwType = cardThrowConfig.types.first;
+            let throwType = this.props.throwType;
             let { left, top } = getAreaThrowPoint(dealAreaBounds, throwType);
 
-            console.log('Playing throwType', throwType);
             return moveThrowStyles(cardBounds.left, cardBounds.top, left, top, throwType);
         }
 
@@ -19,11 +28,16 @@ export default class PlayerCard extends React.PureComponent {
 
         return {};
     };
+
     render() {
         let { card, onCardClick, isClicked, playingCard, dealAreaBounds} = this.props;
 
         let isPlaying = playingCard.code === card.code;
         let cardStyle = this.getCardStyle(isClicked, isPlaying, dealAreaBounds, playingCard.bounds);
+
+        if (this.state.isInit) {
+            cardStyle = {...cardStyle, marginLeft: cardOnInit.margin + 'px'};
+        }
 
         return (
             <Card

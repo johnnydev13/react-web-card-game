@@ -69,7 +69,6 @@ export const savePlayerAreaBounds = (playerId, width, height, left, top) => (dis
     return dispatch(playerAreaBounds(playerId, width, height, left, top));
 };
 
-
 export const clearDealArea = () => ({
     type: CLEAR_DEAL_AREA
 });

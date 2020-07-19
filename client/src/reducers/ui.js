@@ -1,19 +1,35 @@
 import * as uiActions from '../actions/ui';
-import * as gameActions from '../actions/game';
 
 const initialState = {
     dealWinners: [],
-    globalError: false,
+    dealMessage: {
+        title: '',
+        text: '',
+        isDisapper: false,
+    },
+    globalError: '',
+    gameResults: [],
 };
 
 function ui(state = initialState, action) {
     switch (action.type) {
+        case uiActions.SHOW_GLOBAL_ERROR:
+            return {...state, globalError: action.title + ': ' + action.text};
         case uiActions.HIDE_GLOBAL_ERROR:
-            return {...state, globalError: false};
-        case gameActions.CONNECT_ERROR:
-            return {...state, globalError: 'Couldn\'t connect to a server: ' + action.error};
-        case uiActions.SHOW_DEAL_WINNER:
-            return {...state, dealWinners: action.dealWinners};
+            return {...state, globalError: ''};
+
+        case uiActions.SHOW_DEAL_MESSAGE:
+            return {...state, dealMessage: {title: action.title, text: action.text, isDisapper: false}};
+        case uiActions.HIDE_DEAL_MESSAGE:
+            return {...state, dealMessage: {...initialState.dealMessage, isDisapper: true}};
+        case uiActions.DESTROY_DEAL_MESSAGE:
+            return {...state, dealMessage: initialState.dealMessage};
+
+        case uiActions.SHOW_GAME_RESULTS:
+            return {...state, gameResults: action.result};
+        case uiActions.HIDE_GAME_RESULTS:
+            return {...state, gameResults: []};
+
         default:
             return state;
     }

@@ -1,6 +1,5 @@
 import React from 'react';
 import SideCard from "../cards/SideCard";
-import {cardThrow as cardThrowConfig} from "../../../config/animation";
 import EnemyAnimatedCard from '../cards/EnemyAnimatedCard';
 
 export default class SideEnemyCards extends React.PureComponent {
@@ -34,7 +33,7 @@ export default class SideEnemyCards extends React.PureComponent {
     };
 
     render() {
-        let { setPlayerBounds, player, dealAreaBounds, containerClass, throwType } = this.props;
+        let { setPlayerBounds, player, dealAreaBounds, containerClass } = this.props;
         return (
             <div className={containerClass}>
                 <div
@@ -52,7 +51,7 @@ export default class SideEnemyCards extends React.PureComponent {
                     }}
                     className='card-container'>
                     {this.renderCards(player)}
-                    {this.renderAnimatedCard(player.playingCard, dealAreaBounds, throwType)}
+                    {this.renderAnimatedCard(player.playingCard, dealAreaBounds, player ? player.num : 0)}
                 </div>
             </div>
         );

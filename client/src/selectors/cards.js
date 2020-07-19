@@ -19,7 +19,6 @@ export const getPlayingCard = createSelector(
         if (typeof cards === 'undefined') {
             return '';
         }
-        console.log('getPlayingCard', cards.playingCard);
         return cards.playingCard;
     }
 );

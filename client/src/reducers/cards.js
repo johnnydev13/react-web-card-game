@@ -34,7 +34,6 @@ const initialState = {
 };
 
 function cards(state = initialState, action) {
-    console.log('cards reducer', state.playingCard);
     switch (action.type) {
         case CARD_PLAYED_END:
             return {...state, cardPlayed: {}, playingCard: {code: '', bounds: {}}};

@@ -6,7 +6,12 @@ $backCardBG: url('../../../assets/images/cardback.png') no-repeat center center;
   height: 100vh;
   display: flex;
   flex-direction: column;
+  background: url('../../../assets/images/table.jpg') no-repeat center center;
+  background-size: cover;
 
+  .top-card, .side-card, .my-card {
+    transition: $transition;
+  }
   .low-area {
     flex: 1 40%;
     text-align: center;
@@ -19,6 +24,22 @@ $backCardBG: url('../../../assets/images/cardback.png') no-repeat center center;
 
   .middle-area {
     flex: 1 35%;
+    position: relative;
+    flex-direction: row;
+
+    .game-message {
+      height: 40px;
+      transition: 5s;
+      color: #fff;
+    }
+    .deal-area {
+      display: flex;
+      flex-direction: column;
+    }
+    .deal-cards {
+      width: 100%;
+      height: 100%;
+    }
   }
 
   .top-area {
@@ -28,7 +49,7 @@ $backCardBG: url('../../../assets/images/cardback.png') no-repeat center center;
     float: left;
     width: 100px;
     height: 150px;
-    margin-left: -40px;
+    margin-left: -60px;
     cursor: pointer;
     transition: $transition;
 
@@ -115,7 +136,7 @@ $backCardBG: url('../../../assets/images/cardback.png') no-repeat center center;
       width: 100px;
       height: 150px;
       left: 25px;
-      z-index: -1;
+      z-index: 0;
       background: $backCardBG;
       background-size: contain;
       transform: rotate(90deg);

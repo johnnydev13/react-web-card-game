@@ -8,6 +8,7 @@ export default class LowArea extends React.PureComponent {
         return (
             <div className="low-area">
                 <MyCards
+                    throwType={me ? me.num : 0}
                     cards={cards}
                     dealAreaBounds={dealAreaBounds}
                     onMyCardClick={onMyCardClick}

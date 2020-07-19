@@ -1,7 +1,6 @@
 import React from 'react';
 import SideEnemyCards from "./middleArea/SideEnemyCards";
 import DealArea from "./middleArea/DealArea";
-import {cardThrow as cardThrowConfig} from '../../config/animation';
 
 export default class MiddleArea extends React.PureComponent {
     render() {
@@ -15,19 +14,20 @@ export default class MiddleArea extends React.PureComponent {
             dealAreaBounds,
             isClearingDealArea,
             playersCount,
+            dealMessage,
         } = this.props;
 
         return (
             <div
                 className="middle-area">
                 <SideEnemyCards
-                    throwType={cardThrowConfig.types.second}
                     containerClass={'left-enemy-cards'}
                     player={leftPlayer}
                     dealAreaBounds={dealAreaBounds}
                     setPlayerBounds={setPlayerBounds}
                 />
                 <DealArea
+                    dealMessage={dealMessage}
                     playersCount={playersCount}
                     isClearingDealArea={isClearingDealArea}
                     dealCards={dealCards}
@@ -35,7 +35,6 @@ export default class MiddleArea extends React.PureComponent {
                     playersRendered={playersRendered}
                 />
                 <SideEnemyCards
-                    throwType={cardThrowConfig.types.fifth}
                     containerClass={'right-enemy-cards'}
                     player={rightPlayer}
                     dealAreaBounds={dealAreaBounds}

@@ -15,8 +15,8 @@ const configureStore = (socketClient) => {
     const middlewares = [
         thunk,
         logger,
-        socketMiddleware(socketClient),
         localStorageMiddleware,
+        socketMiddleware(socketClient),
     ];
 
     const store = createStore(

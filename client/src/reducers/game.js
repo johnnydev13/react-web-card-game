@@ -1,6 +1,5 @@
 import * as gameActions from '../actions/game';
 import * as cardActions from '../actions/cards';
-import {CONNECT_ERROR} from "../actions/game";
 
 /*function createPlayer(id, type, name) {
     return {
@@ -56,9 +55,6 @@ function game(state = initialState, action) {
                 return player;
             });
 
-            console.log('state.currentTurnPlayerId', state.currentTurnPlayerId);
-            console.log('players', players);
-            console.log('action.result.players', action.result.players);
             return {
                 ...state,
                 players: players,
@@ -138,8 +134,7 @@ function game(state = initialState, action) {
                 players: [...state.players, player]
             };*/
         case gameActions.END_GAME:
-
-            break;
+            return initialState;
         default:
             return state;
     }

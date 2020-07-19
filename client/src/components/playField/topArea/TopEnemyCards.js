@@ -1,7 +1,6 @@
 import React from 'react';
 import BackCard from "../cards/BackCard";
 import EnemyAnimatedCard from '../cards/EnemyAnimatedCard';
-import {cardThrow as cardThrowConfig} from '../../../config/animation';
 
 export default class TopEnemyCards extends React.PureComponent {
     state = {
@@ -22,7 +21,9 @@ export default class TopEnemyCards extends React.PureComponent {
             return false;
         }
 
-        let throwType = this.props.index === 0 ? cardThrowConfig.types.third : cardThrowConfig.types.fourth;
+        let { player } = this.props;
+
+        let throwType = player ? player.num : 0;//this.props.index === 0 ? cardThrowConfig.types.third : cardThrowConfig.types.fourth;
 
         return <EnemyAnimatedCard
             playingCard={playingCard}

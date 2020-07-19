@@ -1,5 +1,5 @@
 import React from "react";
-import UserProfile from "./UserProfile";
+import UserProfile from "./user/UserProfile";
 
 export default class User extends React.PureComponent {
     cancelProfileEditHandler = () => {
@@ -16,6 +16,7 @@ export default class User extends React.PureComponent {
                 <UserProfile
                     login={this.props.login}
                     name={this.props.name}
+                    profileSaved={this.props.profileSaved}
                     onCancel={this.cancelProfileEditHandler}
                     onSave={this.saveProfileHandler}
                     errors={this.props.errors}

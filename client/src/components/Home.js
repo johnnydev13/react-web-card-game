@@ -1,14 +1,22 @@
 import React from "react";
-import {Link} from "react-router-dom";
+import { Link } from "react-router-dom";
+import NewGameCard from "./home/NewGameCard";
+import GamesList from "./home/GamesList";
+import { minPlayers, maxPlayers } from '../config/game';
+import SecondaryButton from "./elements/SecondaryButton";
 
 export default class Home extends React.PureComponent {
-    componentWillReceiveProps(nextProps) {
-        if (nextProps.roomId) {
-            this.goToRoom(nextProps.roomId);
-        }
-    }
-    componentDidMount() {
+    state = {
+        roomId: this.props.roomId,
+    };
 
+    static getDerivedStateFromProps(props, state) {
+        if (state.roomId !== props.roomId) {
+            props.history.push('/game/' + props.roomId);
+            return {...state, roomId: props.roomId};
+        }
+
+        return state;
     }
 
     startGame = () => {
@@ -42,7 +50,7 @@ export default class Home extends React.PureComponent {
 
     };
 
-    renderIserInfo() {
+    renderUserInfo() {
         if (this.props.login === '') {
             return (
                 <div>Hello Unknown player. To play you need <Link to='/user'>to set your login</Link></div>
@@ -54,26 +62,43 @@ export default class Home extends React.PureComponent {
         )
     }
 
+    renderStartButtons = () => {
+        let {login, name, roomId, startGameRequest} = this.props;
+
+        let buttons = [];
+
+        for (let i = minPlayers; i <= maxPlayers; i++) {
+            buttons.push(<NewGameCard
+                goToRoom={this.goToRoom}
+                key={i}
+                login={login}
+                name={name}
+                roomId={roomId}
+                startGameRequest={startGameRequest}
+                playersCount={i}
+            />)
+        }
+
+        return <div className={'buttons'}>{buttons}</div>;
+    };
+
     render () {
+        let { availableGames } = this.props;
         return (
-            <div>
-                {this.renderIserInfo()}
-                <div onClick={this.startGame}>
-                    Start a game
-                </div>
-                <div onClick={this.findGames} style={{marginTop: '20px', marginBottom: '20px'}}>
-                    Get open games
-                </div>
+            <div className={'body'}>
+                <h1 className={'center'}>React JS Test Task</h1>
 
-                <div>
-                    {this.props.availableGames.map((game, index) => (
-                        <div key={index}>
-                            {game.name} {game.players}/{game.maxPlayers} players
+                {this.renderUserInfo()}
+                {this.renderStartButtons()}
 
-                            <Link to={'/game/' + game.id}>Connect to game</Link>
-                        </div>
-                    ))}
-                </div>
+                <SecondaryButton
+                    text={'Find available games'}
+                    onClick={this.findGames}
+                />
+
+                <GamesList
+                    games={availableGames}
+                />
             </div>
         );
     }

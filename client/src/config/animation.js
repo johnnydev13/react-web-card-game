@@ -31,3 +31,15 @@ cardThrow.positionOffsetByType[cardThrow.types.fifth] = {left: 50, top: 100};
 export const dealCardClearing = {
     speed: 2,
 };
+
+export const dealMessage = {
+    disappearSpeed: 5,
+    destroySpeed: 5, // fires after dissapearing
+};
+
+export const cardOnInit = {
+    // not a real animation, just css transition,
+    // so it will be initial margin to create 'animation'
+    // of floating cards on game start
+    margin: -100,
+};

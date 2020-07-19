@@ -3,7 +3,6 @@ import './playField/styles';
 import LowArea from './playField/LowArea';
 import TopArea from './playField/TopArea';
 import MiddleArea from './playField/MiddleArea';
-import {savePlayerAreaBounds} from "../actions/cards";
 
 export default class PlayField extends React.PureComponent {
     componentDidMount() {
@@ -21,7 +20,7 @@ export default class PlayField extends React.PureComponent {
     };
 
     onMyCardClickHandle = (code, cardBounds) => {
-        let { clickedCardCode, isMyTurn, tryMyCardClick, tryUseCard, isPending } = this.props;
+        let { clickedCardCode, isMyTurn, tryMyCardClick, tryUseCard } = this.props;
 
         // second click on a card, that means a player wants to use it
         if (code === clickedCardCode) {
@@ -66,6 +65,7 @@ export default class PlayField extends React.PureComponent {
             dealCards,
             isClearingDealArea,
             playersCount,
+            dealMessage,
         } = this.props;
 
         return (
@@ -78,6 +78,7 @@ export default class PlayField extends React.PureComponent {
                 />
 
                 <MiddleArea
+                    dealMessage={dealMessage}
                     playersCount={playersCount}
                     isClearingDealArea={isClearingDealArea}
                     setDealAreaBounds={this.setDealAreaBounds}
