@@ -1,4 +1,5 @@
 import * as GameConfig from '../config/game';
+import { sortByIntValueDesc, sortByIntValue } from '../helpers/array';
 
 export default class Game {
     constructor(usersStorage, roomsStorage, availableRoomsStorage, cardsLib) {
@@ -132,7 +133,6 @@ export default class Game {
             });
         });
 
-        console.log(players);
         let dealCards = this.game.dealCards;
 
         /*if (dealCards.length > 0 && dealCards[dealCards.length - 1].playerId !== playerLogin) {
@@ -145,6 +145,7 @@ export default class Game {
             currentTurnPlayerId: this.game.currentTurnPlayerId,
             dealWinners: this.game.dealWinners,
             playerLogin: playerLogin,
+            results: this.game.results,
         }
     }
     destroyGame() {
@@ -171,13 +172,7 @@ export default class Game {
         });
 
         let scoreKeys = Object.keys(scores);
-        scoreKeys.sort((a, b) => {
-            let an = parseInt(a);
-            let bn = parseInt(b);
-            if (an < bn) { return 1; }
-            if (an > bn) { return -1; }
-            return 0;
-        });
+        scoreKeys.sort(sortByIntValue);
 
         let winScores = scoreKeys[0];
         let winners = scores[winScores];
@@ -194,6 +189,35 @@ export default class Game {
         });
 
         this.game.dealWinners = winners;
+    }
+    setGameResults() {
+        let scores = {};
+        this.players.forEach((player) => {
+            if (typeof scores[player.scores] === 'undefined') {
+                scores[player.scores] = [];
+            }
+
+            scores[player.scores].push({
+                login: player.login,
+                name: player.name,
+                id: player.id,
+                wins: player.dealWins,
+                scores: player.scores,
+            });
+        });
+
+        let scoreKeys = Object.keys(scores);
+        scoreKeys = scoreKeys.sort(sortByIntValue);
+
+        let winnerScore = scoreKeys[0];
+        let results = {};
+        scoreKeys.forEach(function(score) {
+            results[score] = scores[score].map((player) => {
+                return {...player, isWinner: score === winnerScore}
+            });
+        });
+
+        this.game.results = results;
     }
     newDeal() {
         this.game.dealCards = [];
@@ -255,7 +279,8 @@ export default class Game {
         return !!this.getPlayer(playerId);
     }
     addCardToDeal(card, playerId) {
-        this.game.dealCards = [...this.game.dealCards, {...card, playerId: playerId}];
+        let player = this.getPlayer(playerId);
+        this.game.dealCards = [...this.game.dealCards, {...card, playerId: playerId, playerNum: player.num}];
     }
     removeCardFromPlayer(playerId, cardCode) {
         this.players.forEach((player, index) => {

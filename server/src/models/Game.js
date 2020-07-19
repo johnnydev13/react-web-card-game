@@ -3,6 +3,7 @@ export default class Game {
         this.currentTurnPlayerId = null;
         this.dealWinners = [];
         this.dealCards = [];
+        this.results = [];
     }
 
     setCurrentTurnPlayerId(id) {

@@ -122,6 +122,7 @@ io.on('connection', (client) => {
         PlayerModelInstance.setLogin(playerLogin);
         PlayerModelInstance.setClientId(client.id);
         PlayerModelInstance.setName(playerName);
+        PlayerModelInstance.setNum(GameServiceInstance.getPlayers().length + 1);
 
         GameServiceInstance.setGame(GameModelInstance);
         GameServiceInstance.setRoom(RoomModelInstance);
@@ -171,13 +172,15 @@ io.on('connection', (client) => {
             GameServiceInstance.newDeal();
 
             if (GameServiceInstance.isGameOver()) {
+                GameServiceInstance.setGameResults();
+
                 GameServiceInstance.getPlayersConnections().forEach(data => {
                     io.to(data.clientId).emit('gameOver', GameServiceInstance.publicData(data.login));
                 });
 
                 GameServiceInstance.destroyGame();
 
-                callback(true);
+                return callback(true);
             }
 
             GameServiceInstance.getPlayersConnections().forEach(data => {
@@ -240,6 +243,7 @@ io.on('connection', (client) => {
             PlayerModelInstance.setLogin(playerLogin);
             PlayerModelInstance.setClientId(client.id);
             PlayerModelInstance.setName(playerName);
+            PlayerModelInstance.setNum(GameServiceInstance.getPlayers().length + 1);
 
             GameServiceInstance.addPlayer(PlayerModelInstance);
             GameServiceInstance.updatePlayers();
