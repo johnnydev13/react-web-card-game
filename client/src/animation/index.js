@@ -105,7 +105,7 @@ export const getEndStyles = (toLeft, toTop, throwType) => {
         left: left + 'px',
         top: top + 'px',
         zIndex: throwType,
-        //margin: '0',
+        marginLeft: '0',
     };
 };
 export const moveThrowStyles = (fromLeft, fromTop, toLeft, toTop, throwType) => {

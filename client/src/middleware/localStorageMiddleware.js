@@ -5,7 +5,9 @@ const localStorageMiddleware = ({ getState }) => {
     return next => action => {
         const result = next(action);
 
+        console.log(action.type);
         if (action.type === EDIT_PROFILE_SUCCESS) {
+
             localStorage.setItem(localStorageKeys.USER_PROFILE, JSON.stringify(action.result));
         }
 

@@ -56,7 +56,6 @@ export default function socketMiddleware(socket) {
              * promise: (socket) => socket.emit('MESSAGE', 'hello world!')
              * onSuccess: (data) => do something if socket request succeed
              * type: always 'socket'
-             * stages: [REQUEST, SUCCESS, FAILURE]
              */
             const { promise, type, onPending, onSuccess, onFailure, ...rest } = action;
 

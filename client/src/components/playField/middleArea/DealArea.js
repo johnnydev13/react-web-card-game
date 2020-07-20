@@ -16,7 +16,23 @@ export default class DealArea extends React.PureComponent {
             windowWidth: window.innerWidth,
             windowHeight: window.innerHeight,
         });
+
+        //window.addEventListener('resize', this.updateBounds);
     }
+
+    updateBounds = (el) => {
+        let { playersRendered, setDealAreaBounds } = this.props;
+
+        if (!el || !playersRendered) {
+            return false;
+        }
+
+        if (!this.state.bounds) {
+            let bounds = el.getBoundingClientRect();
+            this.setState({bounds: bounds});
+            setDealAreaBounds(bounds);
+        }
+    };
 
     getClearingStyles = (fromLeft, fromTop, throwType, toLeft, toTop) => {
         let { left, top } = getPositionOffsetByType(fromLeft, fromTop, throwType);
@@ -51,9 +67,9 @@ export default class DealArea extends React.PureComponent {
 
             if (isClearingDealArea) {
                 let {toLeft, toTop} = getRandomOutsidePosition(this.state.windowWidth, this.state.windowHeight);
-                styles = this.getClearingStyles(left, 20, throwType, toLeft, toTop);
+                styles = this.getClearingStyles(left, 0, throwType, toLeft, toTop);
             } else {
-                styles = getEndStyles(left, 20, throwType)
+                styles = getEndStyles(left, 0, throwType)
             }
 
             cards.push(<Card
@@ -68,19 +84,11 @@ export default class DealArea extends React.PureComponent {
     };
 
     render() {
-        let { playersRendered, setDealAreaBounds, dealMessage } = this.props;
+        let { dealMessage } = this.props;
         return (
             <div className="deal-area"
                  ref={(el) => {
-                     if (!el || !playersRendered) {
-                         return false;
-                     }
-
-                     if (!this.state.bounds) {
-                         let bounds = el.getBoundingClientRect();
-                         this.setState({bounds: bounds});
-                         setDealAreaBounds(bounds);
-                     }
+                     this.updateBounds(el)
                  }}>
 
                 <DealMessage dealMessage={dealMessage}/>
