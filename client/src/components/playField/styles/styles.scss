@@ -1,6 +1,7 @@
 $transition: 1s;
 $backCardBG: url('../../../assets/images/cardback.png') no-repeat center center;
 $maxCardContainerSize: 200px;
+$shadowColor: #444;
 
 .game-table {
   width: 100%;
@@ -46,6 +47,19 @@ $maxCardContainerSize: 200px;
   .top-area {
     flex: 1 25%;
   }
+  .top-card, .side-card, .my-card {
+
+  }
+  .top-card, .side-card, .my-card, .deal-card {
+    border-radius: 7px;
+    box-shadow: -1px 0 4px 2px $shadowColor;
+  }
+  .deal-card {
+    box-shadow: 2px 2px 4px 2px $shadowColor;
+  }
+  .card-container {
+
+  }
   .my-card, .animated-card, .deal-card {
     float: left;
     width: 100px;
@@ -53,8 +67,6 @@ $maxCardContainerSize: 200px;
     margin-left: -60px;
     cursor: pointer;
     transition: $transition;
-
-    border-radius: 7px;
   }
 
   .deal-card {
@@ -66,7 +78,7 @@ $maxCardContainerSize: 200px;
 
     .my-card.clicked {
       margin-top: -40px;
-      box-shadow: 0 0 5px #777;
+      /*box-shadow: 0 0 5px #777;*/
     }
 
     .my-card:first-of-type {

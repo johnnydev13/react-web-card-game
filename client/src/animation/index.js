@@ -147,7 +147,7 @@ const rand = (max) => {
 export const getRandomOutsidePosition = (elementWith, elementHeight) => {
     let toLeft, toTop;
     let isLeftRandom = rand(2) === 2;
-    let gap = 300;
+    let gap = 500;
 
     switch (Math.ceil(Math.random() * Math.floor(2))) {
         case 1:
