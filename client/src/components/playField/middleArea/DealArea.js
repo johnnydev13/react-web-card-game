@@ -1,6 +1,6 @@
 import React from 'react';
 import Card from "../cards/Card";
-import {getEndStyles, getPositionOffsetByType, getRandomOutsidePosition, throwToNowhereStyles} from '../../../animation';
+import {getEndStyles, getPositionOffsetByType, getRandomOutsidePosition, throwToNowhereStyles, getAreaThrowPoint} from '../../../animation';
 import DealMessage from './DealMessage';
 
 //const getThrowTypeBy
@@ -69,7 +69,9 @@ export default class DealArea extends React.PureComponent {
                 let {toLeft, toTop} = getRandomOutsidePosition(this.state.windowWidth, this.state.windowHeight);
                 styles = this.getClearingStyles(left, 0, throwType, toLeft, toTop);
             } else {
-                styles = getEndStyles(left, 0, throwType)
+                let { left } = getAreaThrowPoint(bounds, throwType);
+                let positionWithOffset = getPositionOffsetByType(left, 0, throwType);
+                styles = getEndStyles(positionWithOffset.left, positionWithOffset.top, throwType)
             }
 
             cards.push(<Card
