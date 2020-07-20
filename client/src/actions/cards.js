@@ -1,5 +1,6 @@
 import {SOCKET} from '../constants/apiRequestTypes';
 import {cardThrow} from '../config/animation';
+import {CARD_PLAYED_END} from "./game";
 
 export const CLICK_CARD         = 'CLICK_CARD';
 export const UNCLICK_CARD       = 'UNCLICK_CARD';
@@ -9,6 +10,8 @@ export const PLAYER_AREA_BOUNDS = 'PLAYER_AREA_BOUNDS';
 export const CLEAR_DEAL_AREA    = 'CLEAR_DEAL_AREA';
 
 export const PLAY_CARD_SUCCESS = 'PLAY_CARD_SUCCESS';
+
+export const CARD_PLAYED_RENDER_END = 'CARD_PLAYED_RENDER_END';
 
 export const myCardClick = (code)  => ({
     type: CLICK_CARD,
@@ -43,7 +46,7 @@ export const tryUseCard = (code, cardBounds) => (dispatch, getState) =>  {
         return false;
     }
 
-    setTimeout(function () {
+    setTimeout(() => {
         dispatch(playCard(code, getState().user.login, getState().game.roomId));
     }, cardThrow.speed * 1000);
 
@@ -71,4 +74,9 @@ export const savePlayerAreaBounds = (playerId, width, height, left, top) => (dis
 
 export const clearDealArea = () => ({
     type: CLEAR_DEAL_AREA
+});
+
+export const cardPlayedRenderEndAction = (result) => ({
+    type:   CARD_PLAYED_RENDER_END,
+    result: result,
 });

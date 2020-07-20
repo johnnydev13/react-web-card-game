@@ -14,6 +14,20 @@ export const cardThrow = {
     },
     rotateToByType: [],
     positionOffsetByType: [],
+
+    /*
+     * this is quick fix for blinking cards on render
+     * when a card stoped floating to a deal area
+     * the card deletes from player hand and renders on the deal area
+     * and makes annoying blink
+     * following timeout prevents it, because deleting from
+     * players hand processes after creating a card on the deal area
+     *
+     * if enabled it makes short delay after rendering the card
+     * on the deal area and before deleting it from players hands
+     * so it looks seamless (obviously depends on PC specs)
+     * */
+    isBlinkFixEnabled: true,
 };
 
 /* rotations of card when thrown on a deal area*/

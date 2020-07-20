@@ -1,7 +1,7 @@
 import * as playerTypes from '../constants/playerTypes';
 import { SOCKET } from '../constants/apiRequestTypes';
 import {cardThrow, dealCardClearing as dealCardClearingConfig} from '../config/animation';
-import { clearDealArea } from './cards';
+import { clearDealArea, cardPlayedRenderEndAction } from './cards';
 import { showDealMesssage, showGlobalError, showGameResults, hideDealMessage } from './ui';
 
 export const ADD_PLAYER   = 'ADD_PLAYER';
@@ -134,11 +134,16 @@ const cardPlayedEndAction = (result) => ({
     type:   CARD_PLAYED_END,
     result: result,
 });
+
 export const cardPlayed = (result) => (dispatch, getState) => {
     dispatch(hideDealMessage());
 
-    setTimeout(function () {
+    setTimeout(() => {
         dispatch(cardPlayedEndAction(result));
+
+        setTimeout(() => {
+            dispatch(cardPlayedRenderEndAction(result));
+        }, cardThrow.isBlinkFixEnabled ? 50 : 0);
     }, cardThrow.speed * 1000);
 
     return dispatch(cardPlayedAction(result));

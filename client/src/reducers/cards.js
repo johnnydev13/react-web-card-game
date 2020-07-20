@@ -4,7 +4,7 @@ import {
     DEAL_AREA_BOUNDS,
     UNCLICK_CARD,
     PLAYER_AREA_BOUNDS,
-    CLEAR_DEAL_AREA,
+    CLEAR_DEAL_AREA, CARD_PLAYED_RENDER_END,
 } from '../actions/cards';
 import {
     CARD_PLAYED,
@@ -35,8 +35,10 @@ const initialState = {
 
 function cards(state = initialState, action) {
     switch (action.type) {
-        case CARD_PLAYED_END:
+        case CARD_PLAYED_RENDER_END:
             return {...state, cardPlayed: {}, playingCard: {code: '', bounds: {}}};
+        /*case CARD_PLAYED_END:
+            return state;*/
         case CLEAR_DEAL_AREA:
             return {...state, clearingDealArea: true};
         case NEW_DEAL:

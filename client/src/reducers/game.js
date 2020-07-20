@@ -61,12 +61,20 @@ function game(state = initialState, action) {
                 currentTurnPlayerId: action.result.currentTurnPlayerId,
                 dealCards: action.result.dealCards.slice(0, action.result.dealCards.length - 1)
             };
-        case gameActions.CARD_PLAYED_END:
+        case cardActions.CARD_PLAYED_RENDER_END:
             return {
                 ...state,
                 players: action.result.players.map(player => {
                     return {...player, playingCard: false};
                 }),
+                //dealCards: action.result.dealCards,
+            };
+        case gameActions.CARD_PLAYED_END:
+            return {
+                ...state,
+                /*players: action.result.players.map(player => {
+                    return {...player, playingCard: false};
+                }),*/
                 dealCards: action.result.dealCards,
             };
         case gameActions.GAME_DATA_SUCCESS:
