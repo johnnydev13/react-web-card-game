@@ -138,6 +138,7 @@ export default class Game {
         /*if (dealCards.length > 0 && dealCards[dealCards.length - 1].playerId !== playerLogin) {
             dealCards = dealCards.slice(0, dealCards.length - 1);
         }*/
+
         return {
             dealCards: dealCards,
             roomId: this.room.id,
@@ -162,6 +163,32 @@ export default class Game {
         return ['2','3','4','5','6','7','8','9','10','JACK','QUEEN','KING','ACE'].indexOf(cardValue)
     }
     setDealWinner() {
+        let maxScore   = 0;
+        let winner     = '';
+        let winnerName = '';
+
+        this.game.dealCards.forEach(card => {
+            let score = this.cardScoreByValue(card.value);
+            let memoScore = Math.max(maxScore, score);
+
+            if (memoScore > maxScore) {
+                maxScore = memoScore;
+                winner = card.playerId;
+            }
+        });
+
+        this.players.forEach(player => {
+            if (winner === player.id) {
+                player.dealWins += 1;
+                player.scores += parseInt(maxScore);
+
+                winnerName = player.login;
+            }
+        });
+
+        this.game.dealWinners = [ winner ];
+    }
+    setDealWinners() {
         let scores = {};
         this.game.dealCards.forEach(card => {
             let score = this.cardScoreByValue(card.value);
@@ -178,6 +205,7 @@ export default class Game {
         let winners = scores[winScores];
 
         winners.forEach(winner => {
+            // in case of few winners for a deal
             this.players.map(player => {
                 if (winner === player.id) {
                     player.dealWins += 1;
@@ -187,6 +215,7 @@ export default class Game {
                 return player;
             });
         });
+
 
         this.game.dealWinners = winners;
     }
@@ -336,4 +365,3 @@ export default class Game {
         return playerId !== '' && this.players.length < this.room.maxPlayers;
     }
 }
-
