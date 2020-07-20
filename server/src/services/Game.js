@@ -169,10 +169,9 @@ export default class Game {
 
         this.game.dealCards.forEach(card => {
             let score = this.cardScoreByValue(card.value);
-            let memoScore = Math.max(maxScore, score);
 
-            if (memoScore > maxScore) {
-                maxScore = memoScore;
+            if (score >= maxScore) {
+                maxScore = score;
                 winner = card.playerId;
             }
         });
