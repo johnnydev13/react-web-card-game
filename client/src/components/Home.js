@@ -4,6 +4,7 @@ import NewGameCard from "./home/NewGameCard";
 import GamesList from "./home/GamesList";
 import { minPlayers, maxPlayers } from '../config/game';
 import SecondaryButton from "./elements/SecondaryButton";
+import PropTypes from 'prop-types';
 
 export default class Home extends React.PureComponent {
     state = {
@@ -37,7 +38,7 @@ export default class Home extends React.PureComponent {
             // show error here
             return false;
         }
-        if (this.props.roomId) {
+        if (this.props.roomId !== '') {
             return this.goToRoom(this.props.roomId);
         }
 
@@ -103,3 +104,17 @@ export default class Home extends React.PureComponent {
         );
     }
 }
+
+let gameRowShape = PropTypes.shape({
+    id: PropTypes.string,
+    name: PropTypes.string,
+    players: PropTypes.number,
+    maxPlayers: PropTypes.number,
+});
+
+Home.propTypes = {
+    availableGames: PropTypes.arrayOf(gameRowShape),
+    roomId: PropTypes.string,
+    login: PropTypes.string,
+    name: PropTypes.string,
+};

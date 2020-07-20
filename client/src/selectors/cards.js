@@ -17,7 +17,7 @@ export const getPlayingCard = createSelector(
     [getCards],
     (cards) => {
         if (typeof cards === 'undefined') {
-            return '';
+            return {};
         }
         return cards.playingCard;
     }
@@ -27,7 +27,7 @@ export const getDealAreaBounds = createSelector(
     [getCards],
     (cards) => {
         if (typeof cards === 'undefined') {
-            return '';
+            return {};
         }
 
         return cards.dealAreaBounds;

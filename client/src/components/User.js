@@ -1,5 +1,6 @@
 import React from "react";
 import UserProfile from "./user/UserProfile";
+import PropTypes from 'prop-types';
 
 export default class User extends React.PureComponent {
     cancelProfileEditHandler = () => {
@@ -11,17 +12,29 @@ export default class User extends React.PureComponent {
     };
 
     render () {
+        let { name, login, profileSaved, errors} = this.props;
+
         return (
             <div>
                 <UserProfile
-                    login={this.props.login}
-                    name={this.props.name}
-                    profileSaved={this.props.profileSaved}
+                    login={login}
+                    name={name}
+                    profileSaved={profileSaved}
                     onCancel={this.cancelProfileEditHandler}
                     onSave={this.saveProfileHandler}
-                    errors={this.props.errors}
+                    errors={errors}
                 />
             </div>
         );
     }
 }
+
+User.propTypes = {
+    profileSaved: PropTypes.bool,
+    name: PropTypes.string,
+    login: PropTypes.string,
+    errors: PropTypes.shape({
+        login: PropTypes.string,
+        name: PropTypes.string,
+    }),
+};

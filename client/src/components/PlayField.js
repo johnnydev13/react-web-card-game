@@ -3,6 +3,7 @@ import './playField/styles';
 import LowArea from './playField/LowArea';
 import TopArea from './playField/TopArea';
 import MiddleArea from './playField/MiddleArea';
+import PropTypes from 'prop-types';
 
 export default class PlayField extends React.PureComponent {
     componentDidMount() {
@@ -103,3 +104,55 @@ export default class PlayField extends React.PureComponent {
         )
     }
 }
+
+let cardShape = PropTypes.shape({
+    image: PropTypes.string,
+    code: PropTypes.string,
+});
+let boundsShape = PropTypes.shape({
+    width: PropTypes.number,
+    height: PropTypes.number,
+    top: PropTypes.number,
+    left: PropTypes.number,
+});
+let playerData = {
+    login: PropTypes.string,
+    name: PropTypes.string,
+};
+let playerShape = PropTypes.shape({
+    ...playerData,
+    cards: PropTypes.oneOfType([PropTypes.number, cardShape])
+});
+PlayField.propTypes = {
+    roomId: PropTypes.string,
+    login: PropTypes.string,
+    isPending: PropTypes.bool,
+    playersCount: PropTypes.number,
+    dealCards: PropTypes.arrayOf(cardShape),
+
+    dealMessage: PropTypes.shape({
+        title: PropTypes.string,
+        text: PropTypes.string,
+        isDisapper: PropTypes.bool,
+    }),
+    isClearingDealArea: PropTypes.bool,
+    dealAreaBounds: PropTypes.object,
+    clickedCardCode:PropTypes.string,
+    playingCard: PropTypes.shape({
+        image: PropTypes.string,
+        code: PropTypes.string,
+    }),
+    playersAreasBounds: PropTypes.objectOf(boundsShape),
+
+    isMyTurn: PropTypes.bool,
+    me: PropTypes.shape(playerData),
+    topPlayers: PropTypes.arrayOf(playerShape),
+    leftPlayer: PropTypes.oneOfType([
+        playerShape,
+        PropTypes.bool,
+    ]),
+    rightPlayer: PropTypes.oneOfType([
+        playerShape,
+        PropTypes.bool,
+    ]),
+};

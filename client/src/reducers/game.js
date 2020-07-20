@@ -11,8 +11,8 @@ import * as cardActions from '../actions/cards';
 }*/
 
 const initialState = {
-    roomId:              false,
-    errorMessage:        false,
+    roomId:              '',
+    errorMessage:        '',
     isStarted:           false,
     isPending:           false,
     dealNum:             0,
@@ -95,7 +95,7 @@ function game(state = initialState, action) {
             return {...state, players: action.players};
 
         case gameActions.CONNECT_TO_GAME_PENDING:
-            return {...state, errorMessage: false};
+            return {...state, errorMessage: ''};
         case gameActions.CONNECT_TO_GAME_SUCCESS:
             return state;
         case gameActions.CONNECT_TO_GAME_FAILURE:
@@ -105,7 +105,7 @@ function game(state = initialState, action) {
             return {
                 ...state,
                 availableGames: action.result,
-                roomId: false,
+                roomId: '',
             };
         case gameActions.GAMES_REFRESHING_FAILURE:
             return state;

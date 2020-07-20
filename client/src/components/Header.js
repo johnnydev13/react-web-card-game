@@ -1,6 +1,7 @@
 import React from "react";
 import Toast from './elements/Toast';
 import Modal from './elements/Modal';
+import PropTypes from 'prop-types';
 
 export default class Header extends React.PureComponent {
     renderError = () => {
@@ -22,7 +23,7 @@ export default class Header extends React.PureComponent {
     renderGameResults = () => {
         let { gameResults, login } = this.props;
 
-        if (gameResults.length === 0) {
+        if (Object.keys(gameResults).length === 0) {
             return false;
         }
 
@@ -34,9 +35,8 @@ export default class Header extends React.PureComponent {
             return 0;
         });*/
 
-        //console.log('gameResults', gameResults);
-        Object.keys(gameResults.results).forEach(score => {
-            let players = gameResults.results[score];
+        Object.keys(gameResults).forEach(score => {
+            let players = gameResults[score];
 
             let playersRows = [];
 
@@ -79,3 +79,16 @@ export default class Header extends React.PureComponent {
         )
     }
 }
+
+let resultRowShape = PropTypes.shape({
+    isWinner: PropTypes.bool,
+    name: PropTypes.string,
+    wins: PropTypes.number,
+    login: PropTypes.string,
+});
+
+Header.propTypes = {
+    globalError: PropTypes.string.isRequired,
+    gameResults: PropTypes.objectOf(PropTypes.arrayOf(resultRowShape)),
+    login: PropTypes.string,
+};

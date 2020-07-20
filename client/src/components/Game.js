@@ -2,6 +2,7 @@ import React from 'react';
 import LinkButton from './elements/LinkButton';
 import InfoMessage from './elements/InfoMessage';
 import { ListGroup, ProgressBar } from 'react-bootstrap';
+import PropTypes from 'prop-types';
 
 export default class Game extends React.PureComponent {
     state = {
@@ -32,7 +33,7 @@ export default class Game extends React.PureComponent {
         this.props.history.push('/')
     };
     renderError = () =>  {
-        if (!this.props.errorMessage) {
+        if (this.props.errorMessage === '') {
             return false;
         }
 
@@ -70,3 +71,18 @@ export default class Game extends React.PureComponent {
         );
     }
 }
+
+let playerShape = PropTypes.shape({
+    id: PropTypes.string,
+    login: PropTypes.string,
+    name: PropTypes.string,
+});
+
+Game.propTypes = {
+    roomId: PropTypes.string,
+    gameStarted: PropTypes.bool,
+    errorMessage: PropTypes.string,
+    players: PropTypes.arrayOf(playerShape),
+    login: PropTypes.string,
+    name: PropTypes.string,
+};

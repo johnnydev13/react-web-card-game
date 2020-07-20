@@ -8,7 +8,7 @@ const initialState = {
         isDisapper: false,
     },
     globalError: '',
-    gameResults: [],
+    gameResults: {},
 };
 
 function ui(state = initialState, action) {
@@ -26,9 +26,9 @@ function ui(state = initialState, action) {
             return {...state, dealMessage: initialState.dealMessage};
 
         case uiActions.SHOW_GAME_RESULTS:
-            return {...state, gameResults: action.result};
+            return {...state, gameResults: action.result.results};
         case uiActions.HIDE_GAME_RESULTS:
-            return {...state, gameResults: []};
+            return {...state, gameResults: {}};
 
         default:
             return state;
