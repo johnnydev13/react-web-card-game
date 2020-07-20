@@ -19,7 +19,6 @@ export default class MyCards extends React.PureComponent {
     };
 
     render() {
-
         return (
             <div className="my-cards">
                 {this.renderCards()}

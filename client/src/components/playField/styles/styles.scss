@@ -1,5 +1,6 @@
 $transition: 1s;
 $backCardBG: url('../../../assets/images/cardback.png') no-repeat center center;
+$maxCardContainerSize: 200px;
 
 .game-table {
   width: 100%;
@@ -9,13 +10,13 @@ $backCardBG: url('../../../assets/images/cardback.png') no-repeat center center;
   background: url('../../../assets/images/table.jpg') no-repeat center center;
   background-size: cover;
 
-  .top-card, .side-card, .my-card {
-    transition: $transition;
-  }
   .low-area {
     flex: 1 40%;
     text-align: center;
-    max-height: 200px;
+    max-height: $maxCardContainerSize;
+    display: flex;
+    align-items: center;
+    justify-content: center;
 
     .card {
 
@@ -80,6 +81,10 @@ $backCardBG: url('../../../assets/images/cardback.png') no-repeat center center;
     .top-enemy-cards {
       flex: 1;
       text-align: center;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      max-height: $maxCardContainerSize;
 
       .card-container {
         display: inline-block;
@@ -111,16 +116,21 @@ $backCardBG: url('../../../assets/images/cardback.png') no-repeat center center;
       flex: 1;
       align-items: center;
       display: flex;
-
       padding: 10px;
     }
 
+    .left-enemy-cards, .right-enemy-cards {
+      max-width: $maxCardContainerSize;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+    }
     .left-enemy-cards {
-      justify-content: flex-start;
+
     }
 
     .right-enemy-cards {
-      justify-content: flex-end;
+
     }
     .side-card {
       position: relative;

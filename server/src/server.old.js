@@ -133,7 +133,6 @@ io.on('connection', (client) => {
         callback(true);
 
         client.emit('roomCreated', RoomModelInstance.get());
-
     });
 
     client.on('playCard', (data, callback) => {
@@ -287,6 +286,3 @@ io.on('connection', (client) => {
 console.log('listening on port ', port);
 console.log('to change socket port, edit config/server.js');
 
-/*
-
-io.listen(port);*/

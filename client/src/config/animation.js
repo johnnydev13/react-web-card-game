@@ -2,10 +2,9 @@ export const cardThrow = {
     speed: .5, // seconds,
     frames: 50,
     resizeRatio: 1.4,
-    rotateTo: 400, // degrees
 
-    // positioning of card on a deal area
-    // TODO expand config with more clear settings
+    // throw types for each player
+    // expanded settings below
     types: {
         first: 1,
         second: 2,
@@ -16,22 +15,27 @@ export const cardThrow = {
     rotateToByType: [],
     positionOffsetByType: [],
 };
+
+/* rotations of card when thrown on a deal area*/
 cardThrow.rotateToByType[cardThrow.types.first] = 100;
 cardThrow.rotateToByType[cardThrow.types.second] = 360;
 cardThrow.rotateToByType[cardThrow.types.third] = 240;
 cardThrow.rotateToByType[cardThrow.types.fourth] = 120;
 cardThrow.rotateToByType[cardThrow.types.fifth] = 400;
 
+/* offsets of card when thrown on a deal area*/
 cardThrow.positionOffsetByType[cardThrow.types.first] = {left: 40, top: 20};
 cardThrow.positionOffsetByType[cardThrow.types.second] = {left: -50, top: -20};
-cardThrow.positionOffsetByType[cardThrow.types.third] = {left: 100, top: 80};
-cardThrow.positionOffsetByType[cardThrow.types.fourth] = {left: 200, top: -40};
+cardThrow.positionOffsetByType[cardThrow.types.third] = {left: 60, top: 80};
+cardThrow.positionOffsetByType[cardThrow.types.fourth] = {left: -100, top: -40};
 cardThrow.positionOffsetByType[cardThrow.types.fifth] = {left: 50, top: 100};
 
+/* on deal ending need to clear a deal area with animation */
 export const dealCardClearing = {
     speed: 2,
 };
 
+/* fires after each deal */
 export const dealMessage = {
     disappearSpeed: 5,
     destroySpeed: 5, // fires after dissapearing
@@ -42,4 +46,5 @@ export const cardOnInit = {
     // so it will be initial margin to create 'animation'
     // of floating cards on game start
     margin: -100,
+    speed: 1, // seconds
 };

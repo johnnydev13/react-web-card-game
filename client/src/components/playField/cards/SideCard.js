@@ -1,4 +1,5 @@
 import React from 'react';
+import EnemyCard from './EnemyCard';
 
 export default class SideCard extends React.PureComponent {
     state =  {
@@ -7,7 +8,7 @@ export default class SideCard extends React.PureComponent {
 
     render() {
         return (
-            <div className='side-card'></div>
+            <EnemyCard className={'side-card'} floatDirecton={'side'}/>
         );
     }
 }

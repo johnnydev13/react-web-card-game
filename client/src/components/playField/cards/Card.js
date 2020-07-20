@@ -1,5 +1,6 @@
 import React from 'react';
 import Radium from 'radium';
+import { cardOnInit } from '../../../config/animation'
 
 class Card extends React.PureComponent {
 
@@ -10,7 +11,7 @@ class Card extends React.PureComponent {
             <img
                 ref={onRender}
 
-                style={cardStyle}
+                style={{...cardStyle, transition: cardOnInit.speed + 's'}}
                 className={className}
                 onClick={onCardClick}
 

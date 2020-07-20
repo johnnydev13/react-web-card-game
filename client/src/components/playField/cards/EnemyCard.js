@@ -13,10 +13,12 @@ export default class EnemyCard extends React.PureComponent {
     }
 
     render() {
-        let cardStyle = this.state.isInit ? {marginLeft: cardOnInit.margin + 'px'} : {};
+        let { floatDirecton } = this.props;
+        let floatStyles = floatDirecton === 'side' ? {marginTop: cardOnInit.margin + 'px'} : {marginLeft: cardOnInit.margin + 'px'};
+        let cardStyle = this.state.isInit ? floatStyles : {};
 
         return (
-            <div style={cardStyle} className={this.props.className}></div>
+            <div style={{...cardStyle, transition: cardOnInit.speed + 's'}} className={this.props.className}></div>
         );
     }
 }
