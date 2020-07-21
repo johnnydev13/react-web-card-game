@@ -17,7 +17,7 @@ export const cardThrow = {
 
     /*
      * this is quick fix for blinking cards on render
-     * when a card stoped floating to a deal area
+     * when a card stopped floating to a deal area
      * the card deletes from player hand and renders on the deal area
      * and makes annoying blink
      * following timeout prevents it, because deleting from
