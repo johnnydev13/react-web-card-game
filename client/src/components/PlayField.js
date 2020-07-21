@@ -11,8 +11,18 @@ export default class PlayField extends React.PureComponent {
             // page refreshed, need to get game data from a server
             this.props.getGameDataRequest(this.props.match.params.roomId, this.props.login)
         }
+
+        this.preloadImages();
     }
 
+    preloadImages = () => {
+        ['H', 'C', 'D', 'S'].forEach((type) => {
+            ['2','3','4','5','6','7','8','9','10','J','Q','K','A'].forEach((cardKey) => {
+                new Image().src = 'https://deckofcardsapi.com/static/img/' + cardKey + type + '.png';
+            });
+        });
+
+    };
     setDealAreaBounds = (bounds) => {
         this.props.saveDealAreaBounds(bounds.width, bounds.height, bounds.left, bounds.top);
     };

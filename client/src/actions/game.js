@@ -143,7 +143,7 @@ export const cardPlayed = (result) => (dispatch, getState) => {
 
         setTimeout(() => {
             dispatch(cardPlayedRenderEndAction(result));
-        }, cardThrow.isBlinkFixEnabled ? 50 : 0);
+        }, cardThrow.isBlinkFixEnabled ? 100 : 0);
     }, cardThrow.speed * 1000);
 
     return dispatch(cardPlayedAction(result));

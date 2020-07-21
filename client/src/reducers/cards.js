@@ -8,7 +8,7 @@ import {
 } from '../actions/cards';
 import {
     CARD_PLAYED,
-    CARD_PLAYED_END,
+    //CARD_PLAYED_END,
     NEW_DEAL
 } from '../actions/game';
 

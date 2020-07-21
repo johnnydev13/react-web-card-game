@@ -1,6 +1,6 @@
 import {SOCKET} from '../constants/apiRequestTypes';
 import {cardThrow} from '../config/animation';
-import {CARD_PLAYED_END} from "./game";
+//import {CARD_PLAYED_END} from "./game";
 
 export const CLICK_CARD         = 'CLICK_CARD';
 export const UNCLICK_CARD       = 'UNCLICK_CARD';
